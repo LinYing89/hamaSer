@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" metadata-complete="true" version="3.0">
+  <display-name>Archetype Created Web Application</display-name>
+  <listener>
+    <listener-class>
+	  		com.bairock.iot.hamaser.listener.StartUpListener
+	  	</listener-class>
+  </listener>
+  <listener>
+    <listener-class>
+			com.bairock.iot.hamaser.listener.SessionListener
+		</listener-class>
+  </listener>
+  
+  <servlet>
+    <servlet-name>LoginServlet</servlet-name>
+    <servlet-class>com.bairock.iot.hamaser.servlet.LoginServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>WelcomeServlet</servlet-name>
+    <servlet-class>com.bairock.iot.hamaser.servlet.WelcomeServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>RegisterServlet</servlet-name>
+    <servlet-class>com.bairock.iot.hamaser.servlet.RegisterServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>RegisterGroupServlet</servlet-name>
+    <servlet-class>com.bairock.iot.hamaser.servlet.RegisterGroupServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ChangeGroupServlet</servlet-name>
+    <servlet-class>com.bairock.iot.hamaser.servlet.ChangeGroupServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>EditGroupServlet</servlet-name>
+    <servlet-class>com.bairock.iot.hamaser.servlet.EditGroupServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DeleteGroupServlet</servlet-name>
+    <servlet-class>com.bairock.iot.hamaser.servlet.DeleteGroupServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ClientLoginServlet</servlet-name>
+    <servlet-class>com.bairock.iot.hamaser.servlet.ClientLoginServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/LoginServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>WelcomeServlet</servlet-name>
+    <url-pattern>/WelcomeServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RegisterServlet</servlet-name>
+    <url-pattern>/RegisterServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RegisterGroupServlet</servlet-name>
+    <url-pattern>/RegisterGroupServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ChangeGroupServlet</servlet-name>
+    <url-pattern>/ChangeGroupServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>EditGroupServlet</servlet-name>
+    <url-pattern>/EditGroupServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DeleteGroupServlet</servlet-name>
+    <url-pattern>/DeleteGroupServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ClientLoginServlet</servlet-name>
+    <url-pattern>/ClientLoginServlet</url-pattern>
+  </servlet-mapping>
+  
+  <welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

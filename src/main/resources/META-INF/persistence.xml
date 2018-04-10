@@ -1,0 +1,46 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence  http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+	<persistence-unit name="intelDev">
+		<class>com.bairock.iot.intelDev.device.Coordinator</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.CollectProperty</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.DevCollect</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.Pressure</class>
+		<class>com.bairock.iot.intelDev.device.DevHaveChild</class>
+		<class>com.bairock.iot.intelDev.device.Device</class>
+		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitch</class>
+		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchOneRoad</class>
+		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchThreeRoad</class>
+		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchThreeState</class>
+		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchTwoRoad</class>
+		<class>com.bairock.iot.intelDev.device.devswitch.SubDev</class>
+		<class>com.bairock.iot.intelDev.linkage.ChainHolder</class>
+		<class>com.bairock.iot.intelDev.linkage.Effect</class>
+		<class>com.bairock.iot.intelDev.linkage.guagua.GuaguaHolder</class>
+		<class>com.bairock.iot.intelDev.linkage.Linkage</class>
+		<class>com.bairock.iot.intelDev.linkage.LinkageHolder</class>
+		<class>com.bairock.iot.intelDev.linkage.LinkageCondition</class>
+		<class>com.bairock.iot.intelDev.linkage.loop.LoopDuration</class>
+		<class>com.bairock.iot.intelDev.linkage.loop.LoopHolder</class>
+		<class>com.bairock.iot.intelDev.linkage.timing.Timing</class>
+		<class>com.bairock.iot.intelDev.linkage.timing.TimingHolder</class>
+		<class>com.bairock.iot.intelDev.linkage.timing.WeekHelper</class>
+		<class>com.bairock.iot.intelDev.linkage.timing.ZTimer</class>
+		<class>com.bairock.iot.intelDev.user.AppVersion</class>
+		<class>com.bairock.iot.intelDev.user.DevGroup</class>
+		<class>com.bairock.iot.intelDev.user.User</class>
+		<class>com.bairock.iot.intelDev.linkage.loop.ZLoop</class>
+		<class>com.bairock.iot.intelDev.linkage.timing.MyTime</class>
+		
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/hamadb?useSSL=true&amp;serverTimezone=UTC"/>
+			<property name="javax.persistence.jdbc.user" value="root"/>
+			<property name="javax.persistence.jdbc.password" value="root"/>
+			<property name="hibernate.show_sql" value="true"/>
+<!--			<property name="hibernate.hbm2ddl.auto" value="create"/> -->
+ 			<property name="hibernate.hbm2ddl.auto" value="none"/>
+		</properties>
+	</persistence-unit>
+</persistence>
