@@ -75,4 +75,10 @@ public class MyOnStateChangedListener implements OnStateChangedListener {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void onNoResponse(Device dev) {
+		// TODO Auto-generated method stub
+		
+	}
 }

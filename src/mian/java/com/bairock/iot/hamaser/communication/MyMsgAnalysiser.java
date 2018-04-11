@@ -41,4 +41,10 @@ public class MyMsgAnalysiser extends MessageAnalysiser {
 		
 	}
 
+	@Override
+	public void unKnowDev(Device device, String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

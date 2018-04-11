@@ -14,7 +14,7 @@
 	String managerName = ((User)request.getSession().getAttribute(SessionHelper.USER)).getName();
 	
 	DevGroup user = (DevGroup)request.getSession().getAttribute(SessionHelper.DEV_GROUP);
-	List<Device> listDev = user.findListIStateDev();
+	List<Device> listDev = user.findListIStateDev(true);
 	List<DevCollect> listClimate = user.findListCollectDev();
 	
 	request.setAttribute("listDevice", listDev);
@@ -416,17 +416,15 @@
 								<td class="d${climate.coding }v">${climate.perValue}${climate.unit}</td>
 							</c:if>
 						</tr>
-						<c:if test="${climate.mainCodeId=='y1'}">
 							<tr>
 								<td colspan="4">
 								<div class="progress progress-striped active">
 								   <div class="d${climate.coding}p progress-bar" role="progressbar" aria-valuenow="10" 
-								      aria-valuemin="0" aria-valuemax="100" style="width: ${climate.perValue}%;">
+								      aria-valuemin="0" aria-valuemax="100" style="width: ${climate.collectProperty.percent}%;">
 								   </div>
 								</div>
 								</td>
 							</tr>
-						</c:if>
 					</c:forEach>
 				</tbody>
 			</table>

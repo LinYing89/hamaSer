@@ -228,10 +228,11 @@ public class PadChannelBridge {
 			}
 			setDevCtrlModel(dev);
 			String state = cutMsg.substring(index + 1);
+			//TODO there 9 will be replace with b
 			if (state.startsWith("9")) {
-				// 鎸′綅
+				// gear
 				if(!(dev instanceof DevSwitch)) {
-					//鍙湁寮�鍏崇被璁惧鏈夋尅浣�
+					//only switch have gear
 					return;
 				}
 				String devSubCode = cutMsg.substring(cutMsg.lastIndexOf("_") + 1, index);

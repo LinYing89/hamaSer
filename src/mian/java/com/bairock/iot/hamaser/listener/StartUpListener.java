@@ -28,7 +28,7 @@ public class StartUpListener implements ServletContextListener {
     
     public void contextInitialized(ServletContextEvent sce)  { 
     	em = Persistence.createEntityManagerFactory("intelDev");
-    	DevChannelBridgeHelper.DEV_CHANNELbRIDGE_NAME = MyDevChannelBridge.class.getName();
+    	DevChannelBridgeHelper.DEV_CHANNELBRIDGE_NAME = MyDevChannelBridge.class.getName();
     	upDownloadServer = new UpDownloadServer();
     	padServer = new PadServer();
     	devServer = new DevServer();
