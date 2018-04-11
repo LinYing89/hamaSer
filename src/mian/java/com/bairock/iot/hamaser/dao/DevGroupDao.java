@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.bairock.iot.hamaser.communication.MyOnCtrlModelChangedListener;
+import com.bairock.iot.hamaser.communication.MyOnCurrentValueChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnGearChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnStateChangedListener;
 import com.bairock.iot.hamaser.listener.SessionHelper;
@@ -13,6 +14,7 @@ import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.DevStateHelper;
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.Gear;
+import com.bairock.iot.intelDev.device.devcollect.DevCollect;
 import com.bairock.iot.intelDev.user.DevGroup;
 
 public class DevGroupDao {
@@ -115,6 +117,10 @@ public class DevGroupDao {
 			for (Device device1 : ((DevHaveChild) device).getListDev()) {
 				setDeviceListener(device1, onStateChangedListener, onGearChangedListener, l3);
 			}
+		}
+		if(device instanceof DevCollect) {
+			DevCollect dc = (DevCollect)device;
+			dc.getCollectProperty().setOnCurrentValueChanged(new MyOnCurrentValueChangedListener());
 		}
 	}
 }

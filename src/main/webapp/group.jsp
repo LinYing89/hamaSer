@@ -150,13 +150,18 @@
 		}else if(obj.jsonId == 6){
 			//液位计压力值
 			var devCoding = obj.devCoding;
-			var perValue = obj.perValue;
-			var trDevice = $("#tbody_climate").find(".c"+devCoding);
-			var tdClimate = $("#tbody_climate").find(".c"+devCoding+"v");
-			tdClimate[0].innerHTML = perValue + "%";
+			var value = obj.currentValue;
+			var perValue = obj.percent;
+			//alert(obj);
+			//alert(devCoding + value + perValue);
+			var trDevice = $("#tbody_climate").find(".d"+devCoding);
+			var tdClimate = $("#tbody_climate").find(".d"+devCoding+"v");
+			tdClimate[0].innerHTML = value;
+			var tdClimateP = $("#tbody_climate").find(".d"+devCoding+"p");
+			tdClimateP[0].innerHTML = perValue + "%";
 			//per prograss
-			var tdClimateP = $("#tbody_climate").find(".c"+devCoding+"p");
-			tdClimateP[0].style.width= perValue + "%";
+			var tdClimatePb = $("#tbody_climate").find(".d"+devCoding+"pb");
+			tdClimatePb[0].style.width= perValue + "%";
 		}
 	}
 	
@@ -283,8 +288,8 @@
 	var websocket = null;
 	if('WebSocket' in window){
 //  		websocket = new WebSocket("ws://051801.cn/sd/websocket");
- 		websocket = new WebSocket("ws://123.206.104.15:8080/hamaSer/websocket");
-//  		websocket = new WebSocket("ws://192.168.2.100:8080/hamaSer/websocket");
+// 		websocket = new WebSocket("ws://123.206.104.15:8080/hamaSer/websocket");
+  		websocket = new WebSocket("ws://192.168.1.111:8080/hamaSer/websocket");
 	}else{
 		alert("浏览器不支持websocket");
 	}
@@ -405,6 +410,7 @@
 						<th>位号</th>
 						<th>名称</th>
 						<th>值</th>
+						<th>百分比</th>
 					</tr>
 				</thead>
 				<tbody id="tbody_climate">
@@ -412,19 +418,18 @@
 						<tr class="d${climate.coding}">
 							<td>${climate.alias}</td>
 							<td>${climate.name}</td>
-							<c:if test="${climate.mainCodeId=='y1'}">
-								<td class="d${climate.coding }v">${climate.perValue}${climate.unit}</td>
-							</c:if>
+							<td class="d${climate.coding }v">${climate.collectProperty.currentValue}${climate.collectProperty.unitSymbol}</td>
+							<td class="d${climate.coding }p">${climate.collectProperty.percent}%</td>
 						</tr>
-							<tr>
-								<td colspan="4">
-								<div class="progress progress-striped active">
-								   <div class="d${climate.coding}p progress-bar" role="progressbar" aria-valuenow="10" 
-								      aria-valuemin="0" aria-valuemax="100" style="width: ${climate.collectProperty.percent}%;">
-								   </div>
-								</div>
-								</td>
-							</tr>
+						<tr>
+							<td colspan="4">
+							<div class="progress progress-striped active">
+							   <div class="d${climate.coding}pb progress-bar" role="progressbar" aria-valuenow="10" 
+							      aria-valuemin="0" aria-valuemax="100" style="width: ${climate.collectProperty.percent}%;">
+							   </div>
+							</div>
+							</td>
+						</tr>
 					</c:forEach>
 				</tbody>
 			</table>

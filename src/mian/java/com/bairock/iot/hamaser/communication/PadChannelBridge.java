@@ -93,14 +93,11 @@ public class PadChannelBridge {
 		String heart;
 		//
 		if (userName == null || groupName == null) {
-			//涓嶇煡閬撶敤鎴峰悕鎴栫粍鍚�
 			heart = OrderHelper.getOrderMsg("h2");
 		} else {
 			if(haveWebPage()) {
-				//鍚屾璁惧淇℃伅
 				heart = OrderHelper.getOrderMsg("h1");
 			}else {
-				//涓嶅悓姝ヨ澶囦俊鎭�
 				heart = OrderHelper.getOrderMsg("h3");
 			}
 		}
@@ -130,7 +127,6 @@ public class PadChannelBridge {
 
 	private void analysisMsg(String msg) {
 		if (msg.startsWith("UN")) {
-			// 鐢ㄦ埛鍚嶇粍鍚�
 			if (msg.length() <= 3) {
 				return;
 			}
@@ -142,20 +138,17 @@ public class PadChannelBridge {
 			userName = arryMsg[0];
 			groupName = arryMsg[1];
 		} else if (msg.startsWith("S")) {
-			// 璁剧疆鍛戒护锛屽锛歋B10001:a1:ip,port#00
 			int index = msg.indexOf(":");
 			if (index < 0 || index + 3 > msg.length()) {
 				return;
 			}
 			String type = msg.substring(index + 1, index + 2);
 			if (type.equals("a")) {
-				// 璁剧疆璁惧妯″紡
 				String coding = msg.substring(1, index);
 				String model = msg.substring(index + 2, index + 3);
 				String ip = msg.substring(index + 4, msg.indexOf("#"));
 				System.out.println("msg:" + msg);
 				System.out.println("ip:" + ip);
-				// 璁剧疆璁惧妯″紡
 				if(model.equals("1")) {
 					ObjectMapper mapper = new ObjectMapper();
 					try {
@@ -191,7 +184,6 @@ public class PadChannelBridge {
 			String cutMsg = msg.substring(1, msg.indexOf("#"));
 			int index = cutMsg.indexOf(":") + 1;
 			String coding = cutMsg.substring(0, index - 1);
-			// 鎺у埗鍛戒护鍙戦�佺粰杩滅▼妯″紡鐨勮澶�
 			DevChannelBridgeHelper.getIns().sendDevOrder(coding, "$" + msg, this.userName, this.groupName);
 		}  else if (msg.startsWith("ogr")) {
 			// TODO
@@ -219,7 +211,6 @@ public class PadChannelBridge {
 		if (null != group) {
 			String coding = cutMsg.substring(0, index);
 			if(coding.contains("_")) {
-				//鏄瓙璁惧缂栫爜
 				coding = coding.substring(0, coding.indexOf("_"));
 			}
 			Device dev = group.findDeviceWithCoding(coding);
@@ -228,8 +219,7 @@ public class PadChannelBridge {
 			}
 			setDevCtrlModel(dev);
 			String state = cutMsg.substring(index + 1);
-			//TODO there 9 will be replace with b
-			if (state.startsWith("9")) {
+			if (state.startsWith("b")) {
 				// gear
 				if(!(dev instanceof DevSwitch)) {
 					//only switch have gear
@@ -244,11 +234,11 @@ public class PadChannelBridge {
 				subDev.setGear(Enum.valueOf(Gear.class, stateHead));
 				//sendDeviceGear(subDev, userName, groupName);
 			} else if (state.startsWith("2")) {
-				// 鏄惁姝ｅ父
+				// 
 				dev.setDevStateId(DevStateHelper.DS_YI_CHANG);
 				//sendNormalMessage("1", dev, userName, groupName, false);
 			} else {
-				// 璁惧鐘舵��
+				// 
 				dev.handle(state);
 				//sendAffectMessage("1", dev, userName, groupName);
 			}
@@ -260,7 +250,7 @@ public class PadChannelBridge {
 			return;
 		}
 		if (device.getCtrlModel() != CtrlModel.LOCAL) {
-			// 浠巔ad鍙戣繃鏉ョ殑涓�瀹氭槸鏈湴妯″紡
+			// 
 			device.setCtrlModel(CtrlModel.LOCAL);
 			//sendDeviceCtrlModel(device, userName, groupName);
 		}
@@ -345,17 +335,16 @@ public class PadChannelBridge {
 					}
 				}
 			} else if (dev instanceof DevCollect) {
-				if (dev instanceof Pressure) {
-					Pressure p = (Pressure) dev;
-					Map<String, Object> map = new HashMap<>();
-					map.put("jsonId", 6);
-					map.put("devCoding", dev.getCoding());
-					map.put("value", p.getCollectProperty().getPercent());
-					String json = mapper.writeValueAsString(map);
-					if (null != json) {
-						for (GroupWebSocket gws : listMyGroup) {
-							sendGroupMessage(json, gws);
-						}
+				DevCollect dc = (DevCollect)dev;
+				Map<String, Object> map = new HashMap<>();
+				map.put("jsonId", 6);
+				map.put("devCoding", dev.getCoding());
+				map.put("currentValue", dc.getCollectProperty().getCurrentValue());
+				map.put("percent", dc.getCollectProperty().getPercent());
+				String json = mapper.writeValueAsString(map);
+				if (null != json) {
+					for (GroupWebSocket gws : listMyGroup) {
+						sendGroupMessage(json, gws);
 					}
 				}
 			}

@@ -90,7 +90,7 @@ public class GroupWebSocket {
 			int jsonId = (int)map.get("jsonId");
 			switch(jsonId) {
 			case 1:
-				//用户名密码
+				//user name and group name
 				userName = (String)map.get("userName");
 				groupName = (String)map.get("groupName");
 				if(null != userName && null != groupName) {
@@ -99,14 +99,14 @@ public class GroupWebSocket {
 				}
 				break;
 			case 2:
-				//刷新
+				//refresh all device state
 				if(null == groupName || null == userName) {
 					return;
 				}
 				refreshState();
 				break;
 			case 3:
-				//设备命令
+				//control order
 				String coding = (String)map.get("coding");
 				String num = (String)map.get("num");
 				String state = (String)map.get("state");
