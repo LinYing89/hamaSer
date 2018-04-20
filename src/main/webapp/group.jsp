@@ -15,7 +15,7 @@
 	
 	DevGroup user = (DevGroup)request.getSession().getAttribute(SessionHelper.DEV_GROUP);
 	List<Device> listDev = user.findListIStateDev(true);
-	List<DevCollect> listClimate = user.findListCollectDev();
+	List<DevCollect> listClimate = user.findListCollectDev(true);
 	
 	request.setAttribute("listDevice", listDev);
 	request.setAttribute("listClimate", listClimate);
@@ -88,7 +88,8 @@
 			//‘0’关，‘1’开，‘2’停，‘3’正常，‘4’异常
 			var state = obj.state;
 			//alert(state);
-			var trDevice = $("#tbody_device").find(".d"+devCoding);
+// 			var trDevice = $("#tbody_device").find(".d"+devCoding);
+			var trDevice = $(".container").find(".d"+devCoding);
 			if(state == "0"){
 				//off
 				trDevice[0].setAttribute("class", "d" + devCoding);
@@ -165,119 +166,6 @@
 		}
 	}
 	
-	function refreshState(states){
- 		//alert("states:" + states);
-		states=states.replace(/[\r\n]/g,"");
-		if(states == ""){
-			return;
-		}
-		var arryState = states.split(",");
-		for(var i=0; i<arryState.length; i++){
-			var dev = arryState[i];
-			//2dB1000110_3:73
-			if(dev.indexOf(":") >= 0){
-				var arryDevice = dev.split(":");
-				//来源，pad或设备
-				var source = dev.substring(0, 1);
-				//类型，开关设备、信息设备
-				var type = dev.substring(1, 2);
-				//设备编码
-				var coding = arryDevice[0].substring(2);
-				//属性头
-				var stateHead = arryDevice[1].substring(0, 1);
-				//属性体
-				var stateBody = arryDevice[1].substring(1);
-// 				alert("? " + source + type + coding + stateHead + stateBody);
-				if(type == 'c'){
-					//alert("? " + coding + ":" + stateBody);
-					//climate device
-					//per value
-					if(stateHead == "2"){
-						//normal or abnormal
-						var trDevice = $("#tbody_climate").find(".c"+coding);
-						if(stateBody == "3"){
-							//normal
-							trDevice[0].setAttribute("class", "d" + coding); 
-						}else if(stateBody == "4"){
-							//abnormal
-							trDevice[0].setAttribute("class", "danger d" + coding); 
-						}
-					}else{
-						var tdClimate = $("#tbody_climate").find(".c"+coding+"v");
-						tdClimate[0].innerHTML = stateBody + "%";
-						//per prograss
-						var tdClimateP = $("#tbody_climate").find(".c"+coding+"p");
-						tdClimateP[0].style.width= stateBody + "%";
-					}
-				}else if(type == 'd'){
-					//control device
-					if(stateHead == "9"){
-						//auto or not
-						if(stateBody == "0"){
-							//auto
-							var btnAuto = $("#tbody_device").find(".d"+coding+"_0");
-							var btnOn = $("#tbody_device").find(".d"+coding+"_3");
-							var btnOff = $("#tbody_device").find(".d"+coding+"_4");
-							btnAuto.addClass("active");
-							btnOn.removeClass("active");
-							btnOff.removeClass("active");
-						}else if(stateBody == "3"){
-							//on
-							var btnAuto = $("#tbody_device").find(".d"+coding+"_0");
-							var btnOn = $("#tbody_device").find(".d"+coding+"_3");
-							var btnOff = $("#tbody_device").find(".d"+coding+"_4");
-							btnAuto.removeClass("active");
-							btnOn.addClass("active");
-							btnOff.removeClass("active");
-						}else if(stateBody == "4"){
-							//off
-							var btnAuto = $("#tbody_device").find(".d"+coding+"_0");
-							var btnOn = $("#tbody_device").find(".d"+coding+"_3");
-							var btnOff = $("#tbody_device").find(".d"+coding+"_4");
-							btnAuto.removeClass("active");
-							btnOn.removeClass("active");
-							btnOff.addClass("active");
-						}
-					}else if(stateHead == "2"){
-						//alert("? " + coding + ":" + stateBody);
-						//normal or abnormal
-						var trDevice = $("#tbody_device").find(".d"+coding);
-						if(stateBody == "3"){
-							//normal
-							trDevice[0].setAttribute("class", "d" + coding); 
-						}else if(stateBody == "4"){
-							//abnormal
-							trDevice[0].setAttribute("class", "danger d" + coding); 
-						}
-					}else if(stateHead == "7"){
-						//on or off
-						var trDevice = $("#tbody_device").find(".d"+coding);
-						if(stateBody == "3"){
-							//on
-							trDevice[0].setAttribute("class", "success d" + coding); 
-						}else if(stateBody == "4"){
-							//off
-							trDevice[0].setAttribute("class", "d" + coding); 
-						}
-					}
-					//set device ctrl model
-					var tdModel = document.getElementById("d" + coding+"_a");
-					if(tdModel != null){
-						if(source == "2"){
-							if(tdModel.innerHTML != "远程"){
-								tdModel.innerHTML = "远程";
-							}
-						}else if(source == "1"){
-							if(tdModel.innerHTML != "本地"){
-								tdModel.innerHTML = "本地";
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	
 	function clearTime(){
 		closeWebSocket();
 		
@@ -302,18 +190,11 @@
 	var group = '<%=user.getName()%>';
 	
 	websocket.onopen = function(){
-//  		alert("onopen" + manage);
  		var jsonUser = new Object();
  		jsonUser.jsonId = 1;
  		jsonUser.userName = manage;
  		jsonUser.groupName = group
-// 		var jsonUser = {jsonId:1, userName:manage, groupName:group};
-// 		alert("onopen" + jsonUser.userName);
 		send(JSON.stringify(jsonUser));
-		//send('{"jsonId":2}');
-// 		alert("{'jsonId':2}");
-// 		send("USER:" + manage + ":" + group);
-// 		send("RF");
 	};
 	
 	websocket.onmessage = function(event){
@@ -415,7 +296,7 @@
 				</thead>
 				<tbody id="tbody_climate">
 					<c:forEach items="${listClimate}" var="climate">
-						<tr class="d${climate.coding}">
+						<tr class="d${climate.coding} danger">
 							<td>${climate.alias}</td>
 							<td>${climate.name}</td>
 							<td class="d${climate.coding }v">${climate.collectProperty.currentValue}${climate.collectProperty.unitSymbol}</td>

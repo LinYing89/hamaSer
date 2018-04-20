@@ -32,6 +32,10 @@
 		<class>com.bairock.iot.intelDev.user.User</class>
 		<class>com.bairock.iot.intelDev.linkage.loop.ZLoop</class>
 		<class>com.bairock.iot.intelDev.linkage.timing.MyTime</class>
+		<class>com.bairock.iot.intelDev.device.DevContainer</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.DevCollectSignalContainer</class>
+		<class>com.bairock.iot.intelDev.device.GuaguaMouth</class>
+		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchXRoad</class>
 		
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

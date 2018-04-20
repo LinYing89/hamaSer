@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bairock.iot.intelDev.communication.RefreshCollectorValueHelper;
 import com.bairock.iot.intelDev.device.CtrlModel;
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.Device.OnStateChangedListener;
 import com.bairock.iot.intelDev.device.IStateDev;
 import com.bairock.iot.intelDev.device.devcollect.DevCollect;
+import com.bairock.iot.intelDev.device.devcollect.DevCollectSignalContainer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,14 +23,26 @@ public class MyOnStateChangedListener implements OnStateChangedListener {
 
 	@Override
 	public void onNormalToAbnormal(Device dev) {
-		// TODO Auto-generated method stub
-
+		if(dev instanceof DevCollect || dev instanceof DevCollectSignalContainer){
+            RefreshCollectorValueHelper.getIns().endRefresh(dev);
+        }
 	}
 
 	@Override
 	public void onAbnormalToNormal(Device dev) {
-		// TODO Auto-generated method stub
-
+		boolean canAdd = false;
+        if(dev instanceof DevCollectSignalContainer){
+            canAdd = true;
+        }else if(dev instanceof DevCollect){
+            if(dev.getParent() == null){
+                canAdd = true;
+            }else if(!(dev.getParent() instanceof DevCollectSignalContainer)){
+                canAdd = true;
+            }
+        }
+        if(canAdd){
+            RefreshCollectorValueHelper.getIns().RefreshDev(dev);
+        }
 	}
 
 	private void refreshUi(Device device) {
@@ -39,8 +53,8 @@ public class MyOnStateChangedListener implements OnStateChangedListener {
 					.getMyListGroupWebSocket(superParent.getDevGroup().getUser().getName(), superParent.getDevGroup().getName());
 			if (!device.isNormal() && device.getCtrlModel() == CtrlModel.REMOTE) {
 				String order = device.createAbnormalOrder();
-				PadChannelBridgeHelper.getIns().sendOrder(device.getDevGroup().getUser().getName(),
-						device.getDevGroup().getName(), order);
+				PadChannelBridgeHelper.getIns().sendOrder(superParent.getDevGroup().getUser().getName(),
+						superParent.getDevGroup().getName(), order);
 			}
 			if (device instanceof IStateDev || device instanceof DevCollect) {
 				Map<String, Object> map = new HashMap<>();

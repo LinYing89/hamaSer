@@ -69,10 +69,11 @@ public class PadChannelBridge {
 	public void channelReceived(String msg) {
 		noReponse = 0;
 		sbReceived.append(msg);
+		//System.out.println(sbReceived.length() + "?");
 		if(judgeMsgFormate(sbReceived.toString())){
 			displayMsg(sbReceived.toString());
 			sbReceived.setLength(0);
-		}else if(sbReceived.length() >= 5000) {
+		}else if(sbReceived.length() >= 20000) {
 			sbReceived.setLength(0);
 		}
 	}
@@ -174,7 +175,7 @@ public class PadChannelBridge {
 					}
 					sendMessage(OrderHelper.getOrderMsg("I" + coding + ":a1"));
 				}else {
-					DevChannelBridgeHelper.getIns().sendDevOrder(coding, "$" + msg);
+					DevChannelBridgeHelper.getIns().sendDevOrder(coding, "$" + msg, true);
 				}
 			}
 		} else if (msg.startsWith("C")) {
@@ -184,7 +185,7 @@ public class PadChannelBridge {
 			String cutMsg = msg.substring(1, msg.indexOf("#"));
 			int index = cutMsg.indexOf(":") + 1;
 			String coding = cutMsg.substring(0, index - 1);
-			DevChannelBridgeHelper.getIns().sendDevOrder(coding, "$" + msg, this.userName, this.groupName);
+			DevChannelBridgeHelper.getIns().sendDevOrder(coding, "$" + msg, this.userName, this.groupName, true);
 		}  else if (msg.startsWith("ogr")) {
 			// TODO
 		} else if (msg.startsWith("ogs")) {
@@ -235,7 +236,10 @@ public class PadChannelBridge {
 				//sendDeviceGear(subDev, userName, groupName);
 			} else if (state.startsWith("2")) {
 				// 
-				dev.setDevStateId(DevStateHelper.DS_YI_CHANG);
+				String s1 = state.substring(1,2);
+                if(s1.equals(DevStateHelper.getIns().getDs(DevStateHelper.DS_YI_CHANG))){
+                    dev.setDevStateId(DevStateHelper.DS_YI_CHANG);
+                }
 				//sendNormalMessage("1", dev, userName, groupName, false);
 			} else {
 				// 

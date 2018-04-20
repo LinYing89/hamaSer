@@ -17,6 +17,7 @@ import com.bairock.iot.intelDev.communication.DevChannelBridgeHelper;
 import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.OrderHelper;
+import com.bairock.iot.intelDev.device.devcollect.DevCollect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.jdbc.StringUtils;
 
@@ -115,7 +116,7 @@ public class GroupWebSocket {
 				
 				//TODO send to remote device
 				if(!state.equals("0")) {
-					DevChannelBridgeHelper.getIns().sendDevOrder(coding, order, userName, groupName);
+					DevChannelBridgeHelper.getIns().sendDevOrder(coding, order, userName, groupName, true);
 				}
 				//send to pad always, if is remote, pad change gate, if is local, pad change gate and send order to local
 				sendToCu(userName, groupName, order);
@@ -136,7 +137,7 @@ public class GroupWebSocket {
 		for(DevChannelBridge dcb : DevChannelBridgeHelper.getIns().getListDevChannelBridge()) {
 			if(null != dcb.getDevice() && null != dcb.getDevice().getDevGroup() 
 					&& null != dcb.getDevice().getDevGroup().getUser()
-					&& dcb.getDevice().getDevGroup() .getName().equals(groupName)
+					&& dcb.getDevice().getDevGroup().getName().equals(groupName)
 					&& dcb.getDevice().getDevGroup().getUser().getName().equals(userName)) {
 				refreshDevState(dcb.getDevice());
 			}
@@ -157,6 +158,7 @@ public class GroupWebSocket {
 			if (null != json) {
 				sendMessage(json);
 			}
+			
 			map = new HashMap<>();
 			map.put("jsonId", 4);
 			map.put("devCoding", dev.getCoding());
@@ -164,6 +166,19 @@ public class GroupWebSocket {
 			json = mapper.writeValueAsString(map);
 			if (null != json) {
 				sendMessage(json);
+			}
+			
+			if(dev instanceof DevCollect) {
+				map = new HashMap<>();
+				DevCollect dc = (DevCollect)dev;
+				map.put("jsonId", 6);
+				map.put("devCoding", dev.getCoding());
+				map.put("currentValue", dc.getCollectProperty().getCurrentValue());
+				map.put("percent", dc.getCollectProperty().getPercent());
+				json = mapper.writeValueAsString(map);
+				if (null != json) {
+					sendMessage(json);
+				}
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

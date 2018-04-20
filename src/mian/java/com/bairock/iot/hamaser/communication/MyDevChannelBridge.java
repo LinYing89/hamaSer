@@ -73,7 +73,7 @@ public class MyDevChannelBridge extends DevChannelBridge {
 				userName = str.substring(1);
 			}else if(str.startsWith("g")) {
 				groupName = str.substring(1);
-			}else if(str.startsWith("7") || str.startsWith("2")) {
+			}else{
 				state = str;
 			}
 		}
@@ -126,7 +126,7 @@ public class MyDevChannelBridge extends DevChannelBridge {
 				}else {
 					handleState(getDevice(), state);
 				}
-				PadChannelBridgeHelper.getIns().sendOrder(this.userName,this.groupName, msg);
+				PadChannelBridgeHelper.getIns().sendOrder(this.userName,this.groupName, OrderHelper.PREFIX + msg);
 			}
 		}
 	}
