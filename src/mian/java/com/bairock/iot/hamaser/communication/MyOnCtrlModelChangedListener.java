@@ -20,7 +20,7 @@ public class MyOnCtrlModelChangedListener implements OnCtrlModelChangedListener 
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<>();
 		map.put("jsonId", 4);
-		map.put("devCoding", dev.getCoding());
+		map.put("devCoding", dev.getLongCoding());
 		map.put("ctrlModel", dev.getCtrlModel().toString());
 		try {
 			String json = mapper.writeValueAsString(map);

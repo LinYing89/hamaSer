@@ -119,7 +119,7 @@ public class MyDevChannelBridge extends DevChannelBridge {
 		}else {
 			if(null != coding) {
 				if(!getDevice().getCoding().equals(coding) && getDevice() instanceof DevHaveChild) {
-					Device childDev = ((DevHaveChild)getDevice()).getDevByCoding(coding);
+					Device childDev = ((DevHaveChild)getDevice()).findDevByCoding(coding);
 					if(null != childDev) {
 						handleState(childDev, state);
 					}

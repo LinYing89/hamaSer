@@ -20,7 +20,7 @@ public class MyOnGearChangedListener implements OnGearChangedListener {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<>();
 		map.put("jsonId", 5);
-		map.put("devCoding", dev.getCoding());
+		map.put("devCoding", dev.getLongCoding());
 		map.put("gear", dev.getGear().toString());
 		try {
 			String json = mapper.writeValueAsString(map);

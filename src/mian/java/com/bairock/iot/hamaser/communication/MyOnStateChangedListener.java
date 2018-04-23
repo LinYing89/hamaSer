@@ -59,7 +59,7 @@ public class MyOnStateChangedListener implements OnStateChangedListener {
 			if (device instanceof IStateDev || device instanceof DevCollect) {
 				Map<String, Object> map = new HashMap<>();
 				map.put("jsonId", 3);
-				map.put("devCoding", device.getCoding());
+				map.put("devCoding", device.getLongCoding());
 				map.put("state", device.getDevState());
 				String json = mapper.writeValueAsString(map);
 				if (null != json) {

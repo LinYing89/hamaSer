@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.devcollect.CollectProperty;
+import com.bairock.iot.intelDev.device.devcollect.CollectSignalSource;
 import com.bairock.iot.intelDev.device.devcollect.DevCollect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,9 +23,19 @@ public class MyOnCurrentValueChangedListener implements CollectProperty.OnCurren
 		try {
 			Map<String, Object> map = new HashMap<>();
 			map.put("jsonId", 6);
-			map.put("devCoding", dev.getCoding());
-			map.put("currentValue", dev.getCollectProperty().getCurrentValue());
-			map.put("percent", dev.getCollectProperty().getPercent());
+			map.put("devCoding", dev.getLongCoding());
+			if(dev.getCollectProperty().getCollectSrc() == CollectSignalSource.SWITCH) {
+				if(dev.getCollectProperty().getCurrentValue() != null) {
+                    if (dev.getCollectProperty().getCurrentValue() == 1) {
+                        map.put("currentValue", "¿ª");
+                    } else {
+                        map.put("currentValue", "¹Ø");
+                    }
+                }
+			}else {
+				map.put("currentValue", dev.getCollectProperty().getValueWithSymbol());
+			}
+			//map.put("percent", dev.getCollectProperty().getPercent());
 			String json = mapper.writeValueAsString(map);
 			if (null != json) {
 				for (GroupWebSocket gws : listMyGroup) {
