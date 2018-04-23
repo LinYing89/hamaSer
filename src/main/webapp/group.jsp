@@ -15,7 +15,9 @@
 	
 	DevGroup user = (DevGroup)request.getSession().getAttribute(SessionHelper.DEV_GROUP);
 	List<Device> listDev = user.findListIStateDev(true);
+	Collections.sort(listDev);
 	List<DevCollect> listClimate = user.findListCollectDev(true);
+	Collections.sort(listClimate);
 	
 	request.setAttribute("listDevice", listDev);
 	request.setAttribute("listClimate", listClimate);
@@ -44,7 +46,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-
+		
 		$("#climate_device").hide();
 		$("#li_device").click(function() {
 			$(this).attr("class", "active");
@@ -61,6 +63,7 @@
 		$("#btn_refresh").click(function() {
 			post('{"jsonId":2}');
 		});
+		
 	});
 	
 	function ctrlDev(coding, num, state){
@@ -82,6 +85,7 @@
 	function refreshState2(states){
 		//alert(states);
 		var obj = JSON.parse(states);
+		//alert(obj.jsonId);
 		if(obj.jsonId == 3){
 			//设备状态协议
 			var devCoding = obj.devCoding;
@@ -152,17 +156,18 @@
 			//液位计压力值
 			var devCoding = obj.devCoding;
 			var value = obj.currentValue;
-			var perValue = obj.percent;
+			//var perValue = obj.percent;
 			//alert(obj);
-			//alert(devCoding + value + perValue);
+			//alert(devCoding + value);
 			var trDevice = $("#tbody_climate").find(".d"+devCoding);
+			trDevice[0].setAttribute("class", "d" + devCoding);
 			var tdClimate = $("#tbody_climate").find(".d"+devCoding+"v");
 			tdClimate[0].innerHTML = value;
-			var tdClimateP = $("#tbody_climate").find(".d"+devCoding+"p");
-			tdClimateP[0].innerHTML = perValue + "%";
-			//per prograss
-			var tdClimatePb = $("#tbody_climate").find(".d"+devCoding+"pb");
-			tdClimatePb[0].style.width= perValue + "%";
+// 			var tdClimateP = $("#tbody_climate").find(".d"+devCoding+"p");
+// 			tdClimateP[0].innerHTML = perValue + "%";
+// 			//per prograss
+// 			var tdClimatePb = $("#tbody_climate").find(".d"+devCoding+"pb");
+// 			tdClimatePb[0].style.width= perValue + "%";
 		}
 	}
 	
@@ -260,20 +265,20 @@
 				</thead>
 				<tbody id="tbody_device">
 					<c:forEach items="${listDevice}" var="device">
-						<tr class="d${device.coding} danger">
+						<tr class="d${device.longCoding} danger">
 							<td style="width:40%">
 								<div>${device.name}</div>
 								<div>${device.alias}</div>
 							</td>
 							<td style="width:45%">
 								<div class="btn-group">
-									<button style="width:29%; float: left" type="button" class="btn btn-default btn_ctrl d${device.coding}_3" 
+									<button style="width:29%; float: left" type="button" class="btn btn-default btn_ctrl d${device.longCoding}_3" 
 										onclick="ctrlDev('${device.parent.coding}', '${device.subCode }', '3')">开
 									</button>
-									<button style="width:42%; float: left" type="button" class="btn btn-default d${device.coding}_0 btn_ctrl active" 
+									<button style="width:42%; float: left" type="button" class="btn btn-default d${device.longCoding}_0 btn_ctrl active" 
 										onclick="ctrlDev('${device.parent.coding}', '${device.subCode }', '0')">自动
 									</button>
-									<button style="width:29%; float: left" type="button" class="btn btn-default  btn_ctrl d${device.coding}_4" 
+									<button style="width:29%; float: left" type="button" class="btn btn-default  btn_ctrl d${device.longCoding}_4" 
 										onclick="ctrlDev('${device.parent.coding}', '${device.subCode }', '4')">关
 									</button>
 								</div>
@@ -291,26 +296,26 @@
 						<th>位号</th>
 						<th>名称</th>
 						<th>值</th>
-						<th>百分比</th>
+<!-- 						<th>百分比</th> -->
 					</tr>
 				</thead>
 				<tbody id="tbody_climate">
 					<c:forEach items="${listClimate}" var="climate">
-						<tr class="d${climate.coding} danger">
+						<tr class="d${climate.longCoding} danger">
 							<td>${climate.alias}</td>
 							<td>${climate.name}</td>
-							<td class="d${climate.coding }v">${climate.collectProperty.currentValue}${climate.collectProperty.unitSymbol}</td>
-							<td class="d${climate.coding }p">${climate.collectProperty.percent}%</td>
+							<td class="d${climate.longCoding }v">${climate.collectProperty.currentValue}${climate.collectProperty.unitSymbol}</td>
+<%-- 							<td class="d${climate.coding }p">${climate.collectProperty.percent}%</td> --%>
 						</tr>
-						<tr>
-							<td colspan="4">
-							<div class="progress progress-striped active">
-							   <div class="d${climate.coding}pb progress-bar" role="progressbar" aria-valuenow="10" 
-							      aria-valuemin="0" aria-valuemax="100" style="width: ${climate.collectProperty.percent}%;">
-							   </div>
-							</div>
-							</td>
-						</tr>
+<!-- 						<tr> -->
+<!-- 							<td colspan="4"> -->
+<!-- 							<div class="progress progress-striped active"> -->
+<%-- 							   <div class="d${climate.coding}pb progress-bar" role="progressbar" aria-valuenow="10"  --%>
+<%-- 							      aria-valuemin="0" aria-valuemax="100" style="width: ${climate.collectProperty.percent}%;"> --%>
+<!-- 							   </div> -->
+<!-- 							</div> -->
+<!-- 							</td> -->
+<!-- 						</tr> -->
 					</c:forEach>
 				</tbody>
 			</table>
