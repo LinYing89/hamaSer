@@ -45,13 +45,27 @@ public class UpDownloadHandler extends ChannelInboundHandlerAdapter{
 				String groupName = str.substring(str.lastIndexOf(":") + 1);
 				UserDao userDao = new UserDao();
 				User user = userDao.findUserInit(userName, groupName);
-				ObjectMapper mapper = new ObjectMapper();
-				String json = mapper.writeValueAsString(user);
-				if(null != json) {
-					ctx.writeAndFlush(Unpooled.copiedBuffer(json.getBytes("GBK")));
-					TimeUnit.MILLISECONDS.sleep(200);
-					ctx.writeAndFlush(Unpooled.copiedBuffer("OK".getBytes("GBK")));
+				if(null == user || user.getListDevGroup().isEmpty()) {
+					return;
 				}
+				for(DevGroup devGroup : user.getListDevGroup()) {
+					if(null != devGroup.getName() && devGroup.getName().equals(groupName)) {
+						User u = new User();
+						u.setName(user.getName());
+						u.setPetName(user.getPetName());
+						u.addGroup(devGroup);
+						ObjectMapper mapper = new ObjectMapper();
+						String json = mapper.writeValueAsString(u);
+						if(null != json) {
+							ctx.writeAndFlush(Unpooled.copiedBuffer(json.getBytes("GBK")));
+							TimeUnit.MILLISECONDS.sleep(200);
+							ctx.writeAndFlush(Unpooled.copiedBuffer("OK".getBytes("GBK")));
+						}
+						break;
+					}
+				}
+				
+				
 			}else {
 				System.out.println(str);
 				sbReadJson.append(str);
