@@ -1,6 +1,7 @@
 package com.bairock.iot.hamaser.communication;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -16,7 +17,7 @@ public class PadServer {
 	private ChannelFuture f;
 	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
-	
+
 	public void run() throws Exception {
 		bossGroup = new NioEventLoopGroup(); // (1)
 		workerGroup = new NioEventLoopGroup();
@@ -32,20 +33,24 @@ public class PadServer {
 					.childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
 
 			f = b.bind(PORT); // (7)
-//			f.channel().closeFuture().sync();
+			// f.channel().closeFuture().sync();
 			f.channel().closeFuture();
 		} finally {
-//			workerGroup.shutdownGracefully();
-//			bossGroup.shutdownGracefully();
+			// workerGroup.shutdownGracefully();
+			// bossGroup.shutdownGracefully();
 		}
 	}
-	
+
 	public void close() {
-		if(null != bossGroup) {
-			bossGroup.shutdownGracefully();
+		
+		for(Channel cg : PadChannelBridge.channelGroup) {
+			cg.close().syncUninterruptibly();
 		}
-		if(null != workerGroup) {
-			workerGroup.shutdownGracefully();
+		if (null != bossGroup) {
+			bossGroup.shutdownGracefully().syncUninterruptibly();
+		}
+		if (null != workerGroup) {
+			workerGroup.shutdownGracefully().syncUninterruptibly();
 		}
 	}
 }

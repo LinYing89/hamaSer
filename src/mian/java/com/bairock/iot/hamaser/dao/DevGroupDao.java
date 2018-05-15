@@ -73,7 +73,7 @@ public class DevGroupDao {
 		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
 		try {
 			eManager2.getTransaction().begin();
-			eManager2.remove(devGroup);
+			eManager2.remove(eManager2.merge(devGroup));
 			eManager2.getTransaction().commit();
 			res = true;
 		} catch (Exception e) {

@@ -41,7 +41,7 @@ public class EditGroupServlet extends HttpServlet {
 			if(!groupName.equals(selectedGroupName)){
 				for(DevGroup group : manager.getListDevGroup()) {
 					if(groupName.equals(group.getName())) {
-						formbean.getErrors().put("groupName", "ç»„åå·²å­˜åœ¨");
+						formbean.getErrors().put("groupName", "Ãû³ÆÖØ¸´");
 						request.setAttribute("formbean", formbean);
 						request.getRequestDispatcher("/page/editGroup.jsp").forward(request, response);
 						return;
@@ -56,7 +56,7 @@ public class EditGroupServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/groupList.jsp");
 		}catch(Exception e){
 			e.printStackTrace(); 
-			formbean.getErrors().put("groupName", "æäº¤å¤±è´¥");
+			formbean.getErrors().put("groupName", "¸ñÊ½´íÎó");
 			request.setAttribute("formbean", formbean);
 			request.getRequestDispatcher("/page/editGroup.jsp").forward(request, response);
 		}

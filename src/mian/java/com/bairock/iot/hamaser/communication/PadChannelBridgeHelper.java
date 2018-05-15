@@ -19,21 +19,21 @@ public class PadChannelBridgeHelper {
 	private PadChannelBridgeHelper() {
 		IntelDevHelper.executeThread(new PadHeartThread());
 	}
-	
-	public List<PadChannelBridge> getListPadChannelBridge(String userName, String groupName){
+
+	public List<PadChannelBridge> getListPadChannelBridge(String userName, String groupName) {
 		List<PadChannelBridge> list = new ArrayList<>();
 		for (PadChannelBridge db : listPadChannelBridge) {
-			if (null != db.getUserName() && null != db.getGroupName()
-					&& db.getUserName().equals(userName) && db.getGroupName().equals(groupName)) {
+			if (null != db.getUserName() && null != db.getGroupName() && db.getUserName().equals(userName)
+					&& db.getGroupName().equals(groupName)) {
 				list.add(db);
 			}
 		}
 		return list;
 	}
-	
+
 	public void sendOrder(String userName, String groupName, String order) {
 		List<PadChannelBridge> list = getListPadChannelBridge(userName, groupName);
-		for(PadChannelBridge pcb : list) {
+		for (PadChannelBridge pcb : list) {
 			pcb.sendMessageNotReponse(order);
 		}
 	}
@@ -42,7 +42,7 @@ public class PadChannelBridgeHelper {
 		boolean result = false;
 		List<PadChannelBridge> list = listPadChannelBridge;
 		for (PadChannelBridge db : list) {
-			if(null == db || db.getChannelId() == null) {
+			if (null == db || db.getChannelId() == null) {
 				listPadChannelBridge.remove(db);
 				continue;
 			}
@@ -55,11 +55,11 @@ public class PadChannelBridgeHelper {
 			addBridge(channelId);
 		}
 	}
-	
-	public void channelReceived(String channelId, String msg){
+
+	public void channelReceived(String channelId, String msg) {
 		List<PadChannelBridge> list = listPadChannelBridge;
 		for (PadChannelBridge db : list) {
-			if(null == db || db.getChannelId() == null) {
+			if (null == db || db.getChannelId() == null) {
 				listPadChannelBridge.remove(db);
 				continue;
 			}
@@ -69,32 +69,32 @@ public class PadChannelBridgeHelper {
 			}
 		}
 	}
-	
+
 	private void addBridge(String channelId) {
 		PadChannelBridge db = new PadChannelBridge();
 		db.setChannelId(channelId);
 		listPadChannelBridge.add(db);
 	}
 
-	public void removeBridge(PadChannelBridge db){
+	public void removeBridge(PadChannelBridge db) {
 		listPadChannelBridge.remove(db);
 	}
-	
-	public void channelUnRegistered(String channelId){
+
+	public void channelUnRegistered(String channelId) {
 		List<PadChannelBridge> list = new ArrayList<>(listPadChannelBridge);
-		for(PadChannelBridge db : list){
-			if(null == db || db.getChannelId() == null) {
+		for (PadChannelBridge db : list) {
+			if (null == db || db.getChannelId() == null) {
 				listPadChannelBridge.remove(db);
 				continue;
 			}
-			if(db.getChannelId().equals(channelId)){
+			if (db.getChannelId().equals(channelId)) {
 				listPadChannelBridge.remove(db);
 			}
 		}
 	}
-	
+
 	/**
-	 * 发送心跳线程
+	 * 
 	 * @author LinQiang
 	 *
 	 */
@@ -105,18 +105,18 @@ public class PadChannelBridgeHelper {
 			while (!isInterrupted()) {
 				try {
 					sleep(10000);
-					//System.out.println("DevHeartThread begin");
+					// System.out.println("DevHeartThread begin");
 					if (listPadChannelBridge.isEmpty()) {
 						continue;
 					}
-					
+
 					List<PadChannelBridge> list = new ArrayList<>(listPadChannelBridge);
-					//System.out.println("PadChannelBridgeHelper " + list.size());
+					// System.out.println("PadChannelBridgeHelper " + list.size());
 					for (PadChannelBridge db : list) {
 						db.sendHeart();
 					}
 				} catch (InterruptedException e) {
-					 e.printStackTrace();
+					// e.printStackTrace();
 					break;
 				}
 			}

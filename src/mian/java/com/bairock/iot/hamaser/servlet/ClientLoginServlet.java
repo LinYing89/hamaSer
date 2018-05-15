@@ -2,13 +2,18 @@ package com.bairock.iot.hamaser.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bairock.iot.hamaser.communication.PadServer;
 import com.bairock.iot.hamaser.dao.UserDao;
+import com.bairock.iot.intelDev.communication.DevServer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ClientLoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -24,15 +29,23 @@ public class ClientLoginServlet extends HttpServlet {
 		String res = ud.findDevGroupPetName(userName, group, password);
 
 		PrintWriter out = response.getWriter();
-		String message = "";
-		if (null == res) {
-			message = "ERROR";
-		} else {
-			message = "OK:" + res;
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> map = new HashMap<>();
+		if(null == res) {
+			map.put("stateCode", 0);
+		}else {
+			map.put("stateCode", 200);
 		}
-		out.println(message);
-		out.flush();
-		out.close();
+		map.put("petName", res);
+		map.put("padPort", PadServer.PORT);
+		map.put("devPort", DevServer.PORT);
+		String json = mapper.writeValueAsString(map);
+		if(json != null) {
+			out.println(json);
+			out.flush();
+			out.close();
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
