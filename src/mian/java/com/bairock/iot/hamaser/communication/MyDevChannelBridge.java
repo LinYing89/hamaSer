@@ -6,6 +6,7 @@ import com.bairock.iot.hamaser.listener.SessionHelper;
 import com.bairock.iot.intelDev.communication.DevChannelBridge;
 import com.bairock.iot.intelDev.device.CtrlModel;
 import com.bairock.iot.intelDev.device.DevHaveChild;
+import com.bairock.iot.intelDev.device.DevStateHelper;
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.OrderHelper;
 import com.bairock.iot.intelDev.user.DevGroup;
@@ -86,30 +87,23 @@ public class MyDevChannelBridge extends DevChannelBridge {
 				}
 				this.userName = userName;
 				this.groupName = groupName;
-//				User user1 = new User();
-//				user1.setName(userName);
-//				DevGroup dg = new DevGroup();
-//				dg.setName(groupName);
-//				Device dev1 = DeviceAssistent.createDeviceByCoding(coding);
-//				if(null == dev1) {
-//					return;
-//				}
 				
 				//set device which in session to remote model
-				DevGroup group = SessionHelper.getDevGroup(userName, groupName);
-				if (null != group) {
-					Device devInGroup = group.findDeviceWithCoding(coding);
-					if(null != devInGroup && devInGroup.getCtrlModel() != CtrlModel.REMOTE) {
-						devInGroup.setCtrlModel(CtrlModel.REMOTE);
-					}
+				//there not set this device = device in group, because if session is closed, the user info will not release
+				Device devInGroup = findDevInGroup(coding);
+				if(null != devInGroup) {
+					devInGroup.setCtrlModel(CtrlModel.REMOTE);
 				}
 				
 //				dg.addDevice(dev1);
 //				user1.addGroup(dg);
 				dev.setCtrlModel(CtrlModel.UNKNOW);
+				dev.setDevStateId(DevStateHelper.DS_YI_CHANG);
 				setDevice(dev);
 				DevGroupDao.setDeviceListener(dev, new MyOnStateChangedListener(), new MyOnGearChangedListener(),
 						new MyOnCtrlModelChangedListener());
+				sendOrder(dev.createInitOrder());
+				setDeviceToZhangChang(dev);
 				if(null != state) {
 					handleState(dev, state);
 					PadChannelBridgeHelper.getIns().sendOrder(this.userName,this.groupName, msg);
@@ -128,6 +122,22 @@ public class MyDevChannelBridge extends DevChannelBridge {
 				}
 				PadChannelBridgeHelper.getIns().sendOrder(this.userName,this.groupName, OrderHelper.PREFIX + msg);
 			}
+		}
+	}
+	
+	private Device findDevInGroup(String devCoding) {
+		Device devInGroup = null;
+		DevGroup group = SessionHelper.getDevGroup(userName, groupName);
+		if (null != group) {
+			devInGroup = group.findDeviceWithCoding(devCoding);
+		}
+		return devInGroup;
+	}
+	
+	private void setDeviceToZhangChang(Device dev) {
+		dev.setDevStateId(DevStateHelper.DS_ZHENG_CHANG);
+		if(dev instanceof DevHaveChild) {
+			setDeviceToZhangChang(dev);
 		}
 	}
 	

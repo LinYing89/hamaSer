@@ -16,8 +16,10 @@ import com.bairock.iot.intelDev.communication.DevChannelBridge;
 import com.bairock.iot.intelDev.communication.DevChannelBridgeHelper;
 import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.Device;
+import com.bairock.iot.intelDev.device.IStateDev;
 import com.bairock.iot.intelDev.device.OrderHelper;
 import com.bairock.iot.intelDev.device.devcollect.DevCollect;
+import com.bairock.iot.intelDev.device.devcollect.DevCollectSignalContainer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.jdbc.StringUtils;
 
@@ -135,10 +137,11 @@ public class GroupWebSocket {
 	private void refreshState() {
 		sendToCu(userName, groupName, OrderHelper.getOrderMsg("RF"));
 		for(DevChannelBridge dcb : DevChannelBridgeHelper.getIns().getListDevChannelBridge()) {
-			if(null != dcb.getDevice() && null != dcb.getDevice().getDevGroup() 
-					&& null != dcb.getDevice().getDevGroup().getUser()
-					&& dcb.getDevice().getDevGroup().getName().equals(groupName)
-					&& dcb.getDevice().getDevGroup().getUser().getName().equals(userName)) {
+			Device dev = dcb.getDevice();
+			if(null != dev && null != dev.getDevGroup() 
+					&& null != dev.getDevGroup().getUser()
+					&& dev.getDevGroup().getName().equals(groupName)
+					&& dev.getDevGroup().getUser().getName().equals(userName)) {
 				refreshDevState(dcb.getDevice());
 			}
 		}
@@ -179,6 +182,11 @@ public class GroupWebSocket {
 				if (null != json) {
 					sendMessage(json);
 				}
+				if(dev.getParent() == null || !(dev.getParent() instanceof DevCollectSignalContainer)) {
+					DevChannelBridgeHelper.getIns().sendDevOrder(dev, dev.createInitOrder(), true);
+				}
+			}else if(!(dev instanceof IStateDev)) {
+				DevChannelBridgeHelper.getIns().sendDevOrder(dev, dev.createInitOrder(), true);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
