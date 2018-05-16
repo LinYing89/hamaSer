@@ -137,7 +137,8 @@ public class MyDevChannelBridge extends DevChannelBridge {
 	private void setDeviceToZhangChang(Device dev) {
 		dev.setDevStateId(DevStateHelper.DS_ZHENG_CHANG);
 		if(dev instanceof DevHaveChild) {
-			setDeviceToZhangChang(dev);
+			for(Device device : ((DevHaveChild)dev).getListDev())
+			setDeviceToZhangChang(device);
 		}
 	}
 	
