@@ -1,5 +1,8 @@
 package com.bairock.iot.hamaser.listener;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -21,33 +24,45 @@ public class StartUpListener implements ServletContextListener {
 	private UpDownloadServer upDownloadServer;
 	private PadServer padServer;
 	private DevServer devServer;
-	
-    public void contextDestroyed(ServletContextEvent sce)  { 
-    	for(HttpSession s : SessionHelper.LIST_SESSION) {
-    		EntityManager em = (EntityManager) s.getAttribute(SessionHelper.ENTITY_MANAGER);
-    		if(null != em) {
-    			em.close();
-    		}
-    	}
-         em.close();
-         AbandonedConnectionCleanupThread.checkedShutdown();
-         DevChannelBridgeHelper.getIns().stopSeekDeviceOnLineThread();
-         IntelDevHelper.shutDown();
-         upDownloadServer.close();
-         padServer.close();
-         devServer.close();
-    }
-    
-    public void contextInitialized(ServletContextEvent sce)  { 
-    	em = Persistence.createEntityManagerFactory("intelDev");
-    	DevChannelBridgeHelper.DEV_CHANNELBRIDGE_NAME = MyDevChannelBridge.class.getName();
-    	upDownloadServer = new UpDownloadServer();
-    	padServer = new PadServer();
-    	devServer = new DevServer();
-    	PadServer.PORT = 10002;
-    	DevServer.PORT = 10003;
-    	
-    	try {
+
+	public void contextDestroyed(ServletContextEvent sce) {
+		for (HttpSession s : SessionHelper.LIST_SESSION) {
+			EntityManager em = (EntityManager) s.getAttribute(SessionHelper.ENTITY_MANAGER);
+			if (null != em) {
+				em.close();
+			}
+		}
+		em.close();
+		AbandonedConnectionCleanupThread.checkedShutdown();
+		DevChannelBridgeHelper.getIns().stopSeekDeviceOnLineThread();
+		IntelDevHelper.shutDown();
+		upDownloadServer.close();
+		padServer.close();
+		devServer.close();
+	}
+
+	public void contextInitialized(ServletContextEvent sce) {
+		em = Persistence.createEntityManagerFactory("intelDev");
+		DevChannelBridgeHelper.DEV_CHANNELBRIDGE_NAME = MyDevChannelBridge.class.getName();
+
+		try {
+			// ∂¡»°≈‰÷√Œƒº˛
+			Properties properties = new Properties();
+			properties.loadFromXML(new FileInputStream(sce.getServletContext().getRealPath("/WEB-INF/config.xml")));
+			PadServer.PORT = Integer.parseInt(properties.get("padPort").toString());
+			DevServer.PORT = Integer.parseInt(properties.get("devPort").toString());
+			UpDownloadServer.PORT = Integer.parseInt(properties.get("upDownloadPort").toString());
+			System.out.println("padPort:" + PadServer.PORT + " devPort:" + DevServer.PORT + " loadPort:" + UpDownloadServer.PORT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+//		PadServer.PORT = 4045;
+//		DevServer.PORT = 4049;
+
+		try {
+			upDownloadServer = new UpDownloadServer();
+			padServer = new PadServer();
+			devServer = new DevServer();
 			upDownloadServer.run();
 			padServer.run();
 			devServer.run();
@@ -55,13 +70,13 @@ public class StartUpListener implements ServletContextListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    }
-	
-    public static EntityManagerFactory getEntityManagerFactory() {
-    	return em;
-    }
-    
-    public static EntityManager getEntityManager() {
-    	return em.createEntityManager();
-    }
+	}
+
+	public static EntityManagerFactory getEntityManagerFactory() {
+		return em;
+	}
+
+	public static EntityManager getEntityManager() {
+		return em.createEntityManager();
+	}
 }

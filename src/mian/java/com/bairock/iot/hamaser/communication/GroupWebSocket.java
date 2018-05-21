@@ -18,6 +18,7 @@ import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.IStateDev;
 import com.bairock.iot.intelDev.device.OrderHelper;
+import com.bairock.iot.intelDev.device.devcollect.CollectSignalSource;
 import com.bairock.iot.intelDev.device.devcollect.DevCollect;
 import com.bairock.iot.intelDev.device.devcollect.DevCollectSignalContainer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -155,18 +156,20 @@ public class GroupWebSocket {
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> map = new HashMap<>();
 			map.put("jsonId", 3);
-			map.put("devCoding", dev.getCoding());
+			map.put("devCoding", dev.getLongCoding());
 			map.put("state", dev.getDevState());
 			String json = mapper.writeValueAsString(map);
+			System.out.println("GroupWebSocket " + json);
 			if (null != json) {
 				sendMessage(json);
 			}
 			
 			map = new HashMap<>();
 			map.put("jsonId", 4);
-			map.put("devCoding", dev.getCoding());
+			map.put("devCoding", dev.getLongCoding());
 			map.put("ctrlModel", dev.getCtrlModel().toString());
 			json = mapper.writeValueAsString(map);
+			System.out.println("GroupWebSocket " + json);
 			if (null != json) {
 				sendMessage(json);
 			}
@@ -176,8 +179,17 @@ public class GroupWebSocket {
 				DevCollect dc = (DevCollect)dev;
 				map.put("jsonId", 6);
 				map.put("devCoding", dev.getCoding());
-				map.put("currentValue", dc.getCollectProperty().getCurrentValue());
-				map.put("percent", dc.getCollectProperty().getPercent());
+				if(dc.getCollectProperty().getCollectSrc() == CollectSignalSource.SWITCH) {
+					if(dc.getCollectProperty().getCurrentValue() != null) {
+	                    if (dc.getCollectProperty().getCurrentValue() == 1) {
+	                        map.put("currentValue", "¿ª");
+	                    } else {
+	                        map.put("currentValue", "¹Ø");
+	                    }
+	                }
+				}else {
+					map.put("currentValue", dc.getCollectProperty().getValueWithSymbol());
+				}
 				json = mapper.writeValueAsString(map);
 				if (null != json) {
 					sendMessage(json);
