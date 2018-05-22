@@ -14,6 +14,7 @@ import com.bairock.iot.intelDev.user.User;
 
 public class MyDevChannelBridge extends DevChannelBridge {
 
+	private int unrecognizableCount = 0;
 	StringBuilder sb = new StringBuilder();
 	
 	private String userName;
@@ -83,7 +84,15 @@ public class MyDevChannelBridge extends DevChannelBridge {
 				UserDao userDao = new UserDao();
 				Device dev = userDao.findDeviceByUserNameGroupNameDevCoding(userName, groupName, coding);
 				if(null == dev) {
-					return;
+					unrecognizableCount++;
+					if(unrecognizableCount >= 2) {
+						unrecognizableCount = 0;
+						String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
+						order = OrderHelper.getOrderMsg(order);
+						sendOrder(order);
+						System.out.println("MyDevChannelBridge set to local" + order);
+						return;
+					}
 				}
 				this.userName = userName;
 				this.groupName = groupName;
@@ -107,6 +116,16 @@ public class MyDevChannelBridge extends DevChannelBridge {
 				if(null != state) {
 					handleState(dev, state);
 					PadChannelBridgeHelper.getIns().sendOrder(this.userName,this.groupName, msg);
+				}
+			}else if(null != coding) {
+				unrecognizableCount++;
+				if(unrecognizableCount >= 2) {
+					unrecognizableCount = 0;
+					String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
+					order = OrderHelper.getOrderMsg(order);
+					sendOrder(order);
+					System.out.println("MyDevChannelBridge set to local" + order);
+					return;
 				}
 			}
 

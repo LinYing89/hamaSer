@@ -67,11 +67,12 @@ public class UpDownloadHandler extends ChannelInboundHandlerAdapter{
 				
 				
 			}else {
-				System.out.println(str);
+				System.out.println("UpDownloadHandler " + str);
 				sbReadJson.append(str);
 				//upload end
 				if(str.endsWith("#")) {
 					String json = sbReadJson.toString();
+					sbReadJson.setLength(0);
 					json = json.substring(0, json.length() - 1);
 					if(getUserFromJson(json) != null) {
 						ctx.writeAndFlush(Unpooled.copiedBuffer("OK".getBytes("GBK")));

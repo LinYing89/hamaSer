@@ -180,8 +180,8 @@
 	
 	var websocket = null;
 	if('WebSocket' in window){
-//  		websocket = new WebSocket("ws://051801.cn/sd/websocket");
-		websocket = new WebSocket("ws://123.206.104.15:8080/hamaSer/websocket");
+//  		websocket = new WebSocket("ws://051801.cn/hamaSer/websocket");
+		websocket = new WebSocket("ws://123.206.104.15/hamaSer/websocket");
 //   		websocket = new WebSocket("ws://192.168.1.111:8080/hamaSer/websocket");
 	}else{
 		alert("浏览器不支持websocket");
