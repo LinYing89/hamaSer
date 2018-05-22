@@ -45,7 +45,7 @@
 			</div>
 			<br>
 			<div class="input-group">
-				<span class="input-group-addon">密码</span>
+				<span class="input-group-addon">组密码</span>
 				<input type="password" class="form-control" name="psd" value="<%=group.getPsd()%>">
 			</div>
 			<br>

@@ -103,6 +103,7 @@ public class UserDao {
 			user.getListDevGroup();
 			eManager2.getTransaction().commit();
 		} catch (Exception e) {
+			System.out.println("UserDao name is:" + name + " psd is:" + psd);
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
 		}

@@ -4,3 +4,4 @@ encoding//src/mian/java/com/bairock/iot/hamaser/communication/PadChannelBridgeHe
 encoding//src/mian/java/com/bairock/iot/hamaser/dao/RegisterFormBean.java=UTF-8
 encoding//src/mian/java/com/bairock/iot/hamaser/dao/UserDao.java=UTF-8
 encoding//src/mian/java/com/bairock/iot/hamaser/servlet/ClientLoginServlet.java=UTF-8
+encoding//src/mian/java/com/bairock/iot/hamaser/servlet/LoginServlet.java=UTF-8

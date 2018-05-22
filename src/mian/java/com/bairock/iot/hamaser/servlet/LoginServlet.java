@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
 		String ctrlable = "true";
 		String forward = (String) request.getAttribute("forward");
 		if ((null != forward && !forward.isEmpty()) && forward.equals("forward")) {
-			// WelcomeServlet自动登录跳转过来的
+			// 
 			username = (String) request.getAttribute("name");
 			password = (String) request.getAttribute("psd");
 		} else {
@@ -68,7 +68,6 @@ public class LoginServlet extends HttpServlet {
 		}
 		String strAutoLogin = request.getParameter("autoLogin");
 		User user = null;
-		// 管理员登录
 		UserDao ud = new UserDao();
 		
 		EntityManager em = SessionHelper.getEntityManager(username);
@@ -77,19 +76,18 @@ public class LoginServlet extends HttpServlet {
 		user = ud.findByNameAndPsd(username, password);
 
 		if (null == user) {
-			request.setAttribute("error", "用户名或密码错误");
+			request.setAttribute("error", "用户名错误");
 			request.getRequestDispatcher("/login.jsp").forward(request, response);
 			return;
 		}
 
-		// 登陆验证成功
 		request.setAttribute("name", username);
 		boolean autoLogin = false;
-		if (null != strAutoLogin && strAutoLogin.isEmpty()) {
+		if (null != strAutoLogin && !strAutoLogin.isEmpty()) {
 			autoLogin = "on".equalsIgnoreCase(strAutoLogin);
 		}
 		if (autoLogin) {
-			// 添加cookie
+			// 娣诲姞cookie
 			// Cookie userCookie = new Cookie("user", username);
 			// userCookie.setMaxAge(3600);
 			// userCookie.setPath(request.getContextPath());
@@ -103,7 +101,7 @@ public class LoginServlet extends HttpServlet {
 		User sessionuser = SessionHelper.getUser(username);
 		if (null == sessionuser) {
 			sessionuser = user;
-			// 读取文件，初始化user
+			// 璇诲彇鏂囦欢锛屽垵濮嬪寲user
 			// ServerFileHelper.initGroup(username, manager.getSelectedGroup());
 			// initGroup(username, manager.getSelectedGroup());
 		}
@@ -116,25 +114,25 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	/**
-	 * MD5加密算法
+	 * MD5鍔犲瘑绠楁硶
 	 * 
 	 * @param ss
 	 * @return
 	 */
 	public static String calcMD5(String ss) {
 		String s = ss == null ? "" : ss;
-		// 字典
+		// 瀛楀吀
 		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		try {
 			byte[] strTemp = s.getBytes();
-			// 获取MD5
+			// 鑾峰彇MD5
 			MessageDigest mdTemp = MessageDigest.getInstance("MD5");
-			// 更新数据
+			// 鏇存柊鏁版嵁
 			mdTemp.update(strTemp);
-			// 加密
+			// 鍔犲瘑
 			byte[] md = mdTemp.digest();
 			int j = md.length;
-			// 新字符串数组
+			// 鏂板瓧绗︿覆鏁扮粍
 			char str[] = new char[j * 2];
 			int k = 0;
 			for (int i = 0; i < j; i++) {
