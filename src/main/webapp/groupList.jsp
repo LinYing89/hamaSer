@@ -86,7 +86,7 @@ if(null == ctrlable){
 		</div>
 		<div class="collapse navbar-collapse" id="example-navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="<%=path%>/servlet/LogoutServlet">注销</a></li>
+				<li><a href="<%=path%>/Logout">注销</a></li>
 			</ul>
 		</div>
 	</nav>

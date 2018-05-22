@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import com.bairock.iot.intelDev.user.User;
 /**
  * Servlet implementation class LoginServlet
  */
+@WebServlet(description = "login", urlPatterns = { "/Login" })
 public class LoginServlet extends HttpServlet {
 	/**
 	 * 
@@ -48,7 +50,7 @@ public class LoginServlet extends HttpServlet {
 		if ((null != forward && !forward.isEmpty()) && forward.equals("forward")) {
 			// 
 			username = (String) request.getAttribute("name");
-			password = (String) request.getAttribute("psd");
+			password = "auto";
 		} else {
 			username = request.getParameter("name");
 			password = request.getParameter("psd");
@@ -101,9 +103,6 @@ public class LoginServlet extends HttpServlet {
 		User sessionuser = SessionHelper.getUser(username);
 		if (null == sessionuser) {
 			sessionuser = user;
-			// 璇诲彇鏂囦欢锛屽垵濮嬪寲user
-			// ServerFileHelper.initGroup(username, manager.getSelectedGroup());
-			// initGroup(username, manager.getSelectedGroup());
 		}
 		if (null != sessionuser) {
 			request.getSession().setAttribute(SessionHelper.USER, sessionuser);

@@ -3,26 +3,18 @@ package com.bairock.iot.hamaser.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bairock.iot.hamaser.dao.UserDao;
-
 /**
  * Servlet implementation class WelcomeServlet
  */
+@WebServlet(description = "welcome", urlPatterns = { "/Welcome" })
 public class WelcomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public WelcomeServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -47,16 +39,9 @@ public class WelcomeServlet extends HttpServlet {
 			login = ssid.equals(LoginServlet.calcMD5(username + LoginServlet.KEY));
 		}
 		if (login) {
-			UserDao ud = new UserDao();
-			String psd = ud.findPsdByName(username);
-			if (null != psd) {
-				request.setAttribute("forward", "forward");
-				request.setAttribute("name", username);
-				request.setAttribute("psd", psd);
-				request.getRequestDispatcher("/servlet/LoginServlet").forward(request, response);
-			} else {
-				response.sendRedirect(request.getContextPath() + "/login.jsp");
-			}
+			request.setAttribute("forward", "forward");
+			request.setAttribute("name", username);
+			request.getRequestDispatcher("Login").forward(request, response);
 		} else {
 			response.sendRedirect(request.getContextPath() + "/login.jsp");
 		}

@@ -21,6 +21,7 @@ import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 public class StartUpListener implements ServletContextListener {
 
 	private static EntityManagerFactory em = null;
+	public static String SERVER_IP;
 	private UpDownloadServer upDownloadServer;
 	private PadServer padServer;
 	private DevServer devServer;
@@ -49,6 +50,7 @@ public class StartUpListener implements ServletContextListener {
 			// ∂¡»°≈‰÷√Œƒº˛
 			Properties properties = new Properties();
 			properties.loadFromXML(new FileInputStream(sce.getServletContext().getRealPath("/WEB-INF/config.xml")));
+			SERVER_IP = properties.get("serverIp").toString();
 			PadServer.PORT = Integer.parseInt(properties.get("padPort").toString());
 			DevServer.PORT = Integer.parseInt(properties.get("devPort").toString());
 			UpDownloadServer.PORT = Integer.parseInt(properties.get("upDownloadPort").toString());
@@ -56,8 +58,6 @@ public class StartUpListener implements ServletContextListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		PadServer.PORT = 4045;
-//		DevServer.PORT = 4049;
 
 		try {
 			upDownloadServer = new UpDownloadServer();

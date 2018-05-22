@@ -95,10 +95,18 @@ public class UserDao {
 		try {
 			eManager2.getTransaction().begin();
 
-			TypedQuery<User> query = eManager2.createQuery("from User as u where u.name=:name and u.psd=:psd",
-					User.class);
-			query.setParameter("name", name);
-			query.setParameter("psd", psd);
+			TypedQuery<User> query;
+			String sql = null;
+			if(psd.equals("auto")) {
+				sql = "from User as u where u.name=:name";
+				query = eManager2.createQuery(sql, User.class);
+				query.setParameter("name", name);
+			}else {
+				sql = "from User as u where u.name=:name and u.psd=:psd";
+				query = eManager2.createQuery(sql, User.class);
+				query.setParameter("name", name);
+				query.setParameter("psd", psd);
+			}
 			user = query.getSingleResult();
 			user.getListDevGroup();
 			eManager2.getTransaction().commit();

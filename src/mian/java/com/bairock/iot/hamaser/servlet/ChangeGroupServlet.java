@@ -12,6 +12,7 @@ import com.bairock.iot.hamaser.communication.MyOnGearChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnStateChangedListener;
 import com.bairock.iot.hamaser.dao.DevGroupDao;
 import com.bairock.iot.hamaser.listener.SessionHelper;
+import com.bairock.iot.hamaser.listener.StartUpListener;
 import com.bairock.iot.intelDev.user.DevGroup;
 import com.bairock.iot.intelDev.user.User;
 
@@ -38,12 +39,13 @@ public class ChangeGroupServlet extends HttpServlet {
 			MyOnCtrlModelChangedListener l3 = new MyOnCtrlModelChangedListener();
 			DevGroupDao.setDeviceListener(group, l1, l2, l3);
 			request.getSession().setAttribute(SessionHelper.DEV_GROUP, group);
-			response.sendRedirect(request.getContextPath() + "/group.jsp");
+			request.setAttribute("serverIp", StartUpListener.SERVER_IP);
+			request.getRequestDispatcher("/group.jsp").forward(request, response);
+			//response.sendRedirect(request.getContextPath() + "/group.jsp");
 		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

@@ -62,7 +62,7 @@
 			<div class="col-md-4 column"></div>
 			<div class="col-md-4 column" style="margin-top: 10px">
 				<form class="form-horizontal" role="form"
-					action="<%=path%>/LoginServlet" method="post">
+					action="<%=path%>/Login" method="post">
 					<div class="form-group">
 						<div class="col-sm-offset-3 col-sm-9">
 							<h3>登录</h3>

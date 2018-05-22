@@ -12,7 +12,6 @@
 	+ path + "/";
 	
 	String managerName = ((User)request.getSession().getAttribute(SessionHelper.USER)).getName();
-	
 	DevGroup user = (DevGroup)request.getSession().getAttribute(SessionHelper.DEV_GROUP);
 	List<Device> listDev = user.findListIStateDev(true);
 	Collections.sort(listDev);
@@ -177,11 +176,12 @@
 	}
 	window.onunload=clearTime;
 	
-	
+	var serverIp = '<%=request.getAttribute("serverIp")%>';
 	var websocket = null;
 	if('WebSocket' in window){
 //  		websocket = new WebSocket("ws://051801.cn/hamaSer/websocket");
-		websocket = new WebSocket("ws://123.206.104.15/hamaSer/websocket");
+		websocket = new WebSocket("ws://" + serverIp + "/hamaSer/websocket");
+// 		websocket = new WebSocket("ws://123.206.104.15/hamaSer/websocket");
 //   		websocket = new WebSocket("ws://192.168.1.111:8080/hamaSer/websocket");
 	}else{
 		alert("浏览器不支持websocket");
@@ -236,8 +236,7 @@
    </div>
    <div class="collapse navbar-collapse" id="example-navbar-collapse">
       <ul class="nav navbar-nav">
-         <li><a href="<%=path%>/servlet/RefreshDeviceServlet?type=group">更新数据</a></li>
-         <li><a href="<%=path%>/servlet/LogoutServlet">注销</a></li>
+         <li><a href="<%=path%>/Logout">注销</a></li>
       </ul>
    </div>
 </nav>
