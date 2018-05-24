@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>  
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">  
 <properties>
-	<entry key="serverIp">123.206.104.15</entry>
+	<entry key="serverIp">localhost</entry>
     <entry key="padPort">10002</entry>
     <entry key="devPort">10003</entry>
     <entry key="upDownloadPort">10004</entry>  

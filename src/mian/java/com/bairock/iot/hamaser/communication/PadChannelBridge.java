@@ -202,6 +202,7 @@ public class PadChannelBridge {
 	}
 
 	private void analysisIMsg(String msg) {
+		System.out.println("PadChannelBridge analysisIMsg"+ " userName:" + userName + " groupName:" + groupName + " msg:" + msg);
 		if (!msg.contains("#") || !msg.contains(":")) {
 			System.out.println("PadChannelBridge unknow msg:" + msg);
 			return;
@@ -422,7 +423,7 @@ public class PadChannelBridge {
 	}
 
 	public void sendMessage(String msg) {
-		System.out.println("PadChannelBridge sendMessage " + msg);
+		System.out.println("PadChannelBridge sendMessage"+ " userName:" + userName + " groupName:" + groupName + " msg:" + msg);
 		if (noReponse > 2) {
 			channel.close();
 			PadChannelBridgeHelper.getIns().removeBridge(this);
@@ -433,7 +434,7 @@ public class PadChannelBridge {
 	}
 	
 	public void sendMessageNotReponse(String msg) {
-		System.out.println("PadChannelBridge sendMessageNotReponse " + msg);
+		System.out.println("PadChannelBridge sendMessageNotReponse "+ " userName:" + userName + " groupName:" + groupName + " msg:" + msg);
 	    getChannel().writeAndFlush(Unpooled.copiedBuffer(msg.getBytes()));
 	}
 }
