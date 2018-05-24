@@ -91,8 +91,8 @@ public class MyDevChannelBridge extends DevChannelBridge {
 						order = OrderHelper.getOrderMsg(order);
 						sendOrder(order);
 						System.out.println("MyDevChannelBridge set to local" + order);
-						return;
 					}
+					return;
 				}
 				this.userName = userName;
 				this.groupName = groupName;

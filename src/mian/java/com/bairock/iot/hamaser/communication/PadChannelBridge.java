@@ -202,7 +202,8 @@ public class PadChannelBridge {
 	}
 
 	private void analysisIMsg(String msg) {
-		if (!msg.contains("#")) {
+		if (!msg.contains("#") || !msg.contains(":")) {
+			System.out.println("PadChannelBridge unknow msg:" + msg);
 			return;
 		}
 		
