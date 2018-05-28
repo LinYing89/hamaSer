@@ -11,6 +11,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSession;
 
 import com.bairock.iot.hamaser.communication.MyDevChannelBridge;
+import com.bairock.iot.hamaser.communication.MyOnPadDisconnectedListener;
+import com.bairock.iot.hamaser.communication.PadChannelBridgeHelper;
 import com.bairock.iot.hamaser.communication.PadServer;
 import com.bairock.iot.hamaser.communication.UpDownloadServer;
 import com.bairock.iot.intelDev.communication.DevChannelBridgeHelper;
@@ -60,6 +62,7 @@ public class StartUpListener implements ServletContextListener {
 		}
 
 		try {
+			PadChannelBridgeHelper.getIns().setOnPadDisconnectedListener(new MyOnPadDisconnectedListener());
 			upDownloadServer = new UpDownloadServer();
 			padServer = new PadServer();
 			devServer = new DevServer();

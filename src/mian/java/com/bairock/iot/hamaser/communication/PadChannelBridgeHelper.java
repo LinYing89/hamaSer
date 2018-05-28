@@ -12,6 +12,8 @@ public class PadChannelBridgeHelper {
 
 	private List<PadChannelBridge> listPadChannelBridge = Collections.synchronizedList(new ArrayList<>());
 
+	private OnPadDisconnectedListener onPadDisconnectedListener;
+	
 	public static PadChannelBridgeHelper getIns() {
 		return ins;
 	}
@@ -29,6 +31,10 @@ public class PadChannelBridgeHelper {
 			}
 		}
 		return list;
+	}
+
+	public void setOnPadDisconnectedListener(OnPadDisconnectedListener onPadDisconnectedListener) {
+		this.onPadDisconnectedListener = onPadDisconnectedListener;
 	}
 
 	public void sendOrder(String userName, String groupName, String order) {
@@ -73,11 +79,15 @@ public class PadChannelBridgeHelper {
 	private void addBridge(String channelId) {
 		PadChannelBridge db = new PadChannelBridge();
 		db.setChannelId(channelId);
+		db.setOnPadConnectedListener(new MyOnPadConnectedListener());
 		listPadChannelBridge.add(db);
 	}
 
 	public void removeBridge(PadChannelBridge db) {
 		listPadChannelBridge.remove(db);
+		if(null != onPadDisconnectedListener && null != db) {
+			onPadDisconnectedListener.onPadDisconnected(db.getUserName(), db.getGroupName());
+		}
 	}
 
 	public void channelUnRegistered(String channelId) {
@@ -88,9 +98,21 @@ public class PadChannelBridgeHelper {
 				continue;
 			}
 			if (db.getChannelId().equals(channelId)) {
-				listPadChannelBridge.remove(db);
+				removeBridge(db);
 			}
 		}
+	}
+	
+	public List<PadChannelBridge> findMyPadChannelBridge(String userName, String groupName){
+		List<PadChannelBridge> listPb = new ArrayList<>(listPadChannelBridge);
+		List<PadChannelBridge> list = new ArrayList<>();
+		for (PadChannelBridge db : listPb) {
+			if(db.getUserName() != null && db.getGroupName() != null 
+					&& db.getUserName().equals(userName) && db.getGroupName().equals(groupName)) {
+				list.add(db);
+			}
+		}
+		return list;
 	}
 
 	/**
@@ -122,5 +144,9 @@ public class PadChannelBridgeHelper {
 			}
 		}
 
+	}
+	
+	public interface OnPadDisconnectedListener {
+		void onPadDisconnected(String userName, String groupName);
 	}
 }

@@ -31,7 +31,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
 <meta name="description" content="">
 <meta name="author" content="">
@@ -106,13 +106,19 @@
 				//abnormal
 				trDevice[0].setAttribute("class", "danger d" + devCoding);
 				var tdModel = document.getElementById("d" + devCoding+"_a");
-				tdModel.innerHTML = "离线";
+				if(tdModel != null){
+					tdModel.innerHTML = "离线";
+				}
+				
 			}
 		}else if(obj.jsonId == 4){
 			//控制模式协议
 			var devCoding = obj.devCoding;
 			var ctrlModel = obj.ctrlModel;
 			var tdModel = document.getElementById("d" + devCoding+"_a");
+			if(tdModel == null){
+				return;
+			}
 			if(ctrlModel == "LOCAL"){
 				if(tdModel.innerHTML != "本地"){
 					tdModel.innerHTML = "本地";
@@ -167,6 +173,17 @@
 // 			//per prograss
 // 			var tdClimatePb = $("#tbody_climate").find(".d"+devCoding+"pb");
 // 			tdClimatePb[0].style.width= perValue + "%";
+		}else if(obj.jsonId == 7){
+			//终端状态
+			var state = obj.state;
+			var text = "";
+			if(state == 0){
+				text = "终端:离线";
+			}else{
+				text = "终端:在线";
+			}
+			var btnPadState = $(".container").find("#btn_pad_state");
+			btnPadState[0].innerHTML = text;
 		}
 	}
 	
@@ -232,7 +249,7 @@
          <span class="icon-bar"></span>
          <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#"><%=managerName %>-<%=user.getName() %>:<%=user.getPetName() %></a> 
+      <a class="navbar-brand" href="#"><%=managerName %>-<%=user.getName() %>:<%=user.getPetName() %></a>
    </div>
    <div class="collapse navbar-collapse" id="example-navbar-collapse">
       <ul class="nav navbar-nav">
@@ -242,6 +259,7 @@
 </nav>
 
 	<div class="container">
+		
 		<div class="row clearfix">
 			<div class="col-md-12 column">
 				<ul class="nav nav-tabs">
@@ -250,8 +268,12 @@
 					<li id="li_climate"><a href="#">配置</a></li>
 				</ul>
 			</div>
+			
 			<div class="col-md-12 column">
-				<button id="btn_refresh" class="btn btn-default btn-block" >刷新状态</button>
+				<div class="btn-group">
+					<button id="btn_refresh" class="btn btn-default" style="float:left">刷新状态</button>
+					<button id="btn_pad_state" class="btn btn-default disabled" style="float:left">终端状态</button>
+				</div>
 			</div>
 		</div>
 		<div id="control_device">

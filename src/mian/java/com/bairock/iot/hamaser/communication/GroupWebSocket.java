@@ -2,6 +2,7 @@ package com.bairock.iot.hamaser.communication;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.websocket.EndpointConfig;
@@ -21,135 +22,155 @@ import com.bairock.iot.intelDev.device.OrderHelper;
 import com.bairock.iot.intelDev.device.devcollect.CollectSignalSource;
 import com.bairock.iot.intelDev.device.devcollect.DevCollect;
 import com.bairock.iot.intelDev.device.devcollect.DevCollectSignalContainer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.jdbc.StringUtils;
 
-@ServerEndpoint(value="/websocket")
+@ServerEndpoint(value = "/websocket")
 public class GroupWebSocket {
 
 	private Session session;
 	private String userName = "";
 	private String groupName = "";
-//	private boolean onLine = false;
-//	private boolean first = true;
-	
+	// private boolean onLine = false;
+	// private boolean first = true;
+
 	public String getUserName() {
 		return userName;
 	}
+
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
 	public String getGroupName() {
 		return groupName;
 	}
+
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
-	
+
 	@OnOpen
 	public void onOpen(Session session, EndpointConfig config) {
 		this.session = session;
 		GroupWebSocketHelper.addGroupWebSocket(this);
 	}
-	
+
 	@OnClose
 	public void onClose() {
 		closeWebSocket();
 	}
-	
+
 	@OnMessage
 	public void onMessage(String message, Session session) {
 		analysisMessage(message);
 	}
-	
+
 	@OnError
 	public void onError(Session session, Throwable thr) {
 		closeWebSocket();
 	}
-	
+
 	private void closeWebSocket() {
 		GroupWebSocketHelper.removeGroupWebSocket(this);
 		session = null;
 		userName = null;
 		groupName = null;
 	}
-	
-	public void sendMessage(String message){
-		if(null != session) {
+
+	public void sendMessage(String message) {
+		if (null != session) {
 			try {
 				session.getBasicRemote().sendText(message);
-			}catch(IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	private void analysisMessage(String message) {
 		try {
-			if(StringUtils.isNullOrEmpty(message)) {
+			if (StringUtils.isNullOrEmpty(message)) {
 				return;
 			}
 			ObjectMapper mapper = new ObjectMapper();
 			Map<?, ?> map = mapper.readValue(message.substring(message.indexOf("{")), Map.class);
-			int jsonId = (int)map.get("jsonId");
-			switch(jsonId) {
+			int jsonId = (int) map.get("jsonId");
+			switch (jsonId) {
 			case 1:
-				//user name and group name
-				userName = (String)map.get("userName");
-				groupName = (String)map.get("groupName");
-				if(null != userName && null != groupName) {
+				// user name and group name
+				userName = (String) map.get("userName");
+				groupName = (String) map.get("groupName");
+				if (null != userName && null != groupName) {
 					sendToCu(userName, groupName, OrderHelper.getOrderMsg("h1"));
 					refreshState();
 				}
 				break;
 			case 2:
-				//refresh all device state
-				if(null == groupName || null == userName) {
+				// refresh all device state
+				if (null == groupName || null == userName) {
 					return;
 				}
 				refreshState();
 				break;
 			case 3:
-				//control order
-				String coding = (String)map.get("coding");
-				String num = (String)map.get("num");
-				String state = (String)map.get("state");
+				// control order
+				String coding = (String) map.get("coding");
+				String num = (String) map.get("num");
+				String state = (String) map.get("state");
 				String order = "C" + coding + ":" + state + num;
 				order = OrderHelper.getOrderMsg(order);
-				
-				//TODO send to remote device
-				if(!state.equals("0")) {
+
+				// TODO send to remote device
+				if (!state.equals("0")) {
 					DevChannelBridgeHelper.getIns().sendDevOrder(coding, order, userName, groupName, true);
 				}
-				//send to pad always, if is remote, pad change gate, if is local, pad change gate and send order to local
+				// send to pad always, if is remote, pad change gate, if is local, pad change
+				// gate and send order to local
 				sendToCu(userName, groupName, order);
 				break;
 			}
-			
-		}catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void sendToCu(String userName, String groupName, String order) {
 		PadChannelBridgeHelper.getIns().sendOrder(userName, groupName, order);
 	}
-	
+
 	private void refreshState() {
 		sendToCu(userName, groupName, OrderHelper.getOrderMsg("RF"));
-		for(DevChannelBridge dcb : DevChannelBridgeHelper.getIns().getListDevChannelBridge()) {
+		for (DevChannelBridge dcb : DevChannelBridgeHelper.getIns().getListDevChannelBridge()) {
 			Device dev = dcb.getDevice();
-			if(null != dev && null != dev.getDevGroup() 
-					&& null != dev.getDevGroup().getUser()
+			if (null != dev && null != dev.getDevGroup() && null != dev.getDevGroup().getUser()
 					&& dev.getDevGroup().getName().equals(groupName)
 					&& dev.getDevGroup().getUser().getName().equals(userName)) {
 				refreshDevState(dcb.getDevice());
 			}
 		}
+
+		List<PadChannelBridge> listPad = PadChannelBridgeHelper.getIns().findMyPadChannelBridge(userName, groupName);
+		if (listPad.size() > 0) {
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String, Object> map = new HashMap<>();
+			map.put("jsonId", 7);
+			map.put("state", 1);
+			try {
+				String json = mapper.writeValueAsString(map);
+				if (null != json) {
+					sendMessage(json);
+				}
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+		}
 	}
-	
+
 	private void refreshDevState(Device dev) {
-		if(null == dev) {
+		if (null == dev) {
 			return;
 		}
 		try {
@@ -163,7 +184,7 @@ public class GroupWebSocket {
 			if (null != json) {
 				sendMessage(json);
 			}
-			
+
 			map = new HashMap<>();
 			map.put("jsonId", 4);
 			map.put("devCoding", dev.getLongCoding());
@@ -173,51 +194,51 @@ public class GroupWebSocket {
 			if (null != json) {
 				sendMessage(json);
 			}
-			
-			if(dev instanceof DevCollect) {
+
+			if (dev instanceof DevCollect) {
 				map = new HashMap<>();
-				DevCollect dc = (DevCollect)dev;
+				DevCollect dc = (DevCollect) dev;
 				map.put("jsonId", 6);
 				map.put("devCoding", dev.getCoding());
-				if(dc.getCollectProperty().getCollectSrc() == CollectSignalSource.SWITCH) {
-					if(dc.getCollectProperty().getCurrentValue() != null) {
-	                    if (dc.getCollectProperty().getCurrentValue() == 1) {
-	                        map.put("currentValue", "开");
-	                    } else {
-	                        map.put("currentValue", "关");
-	                    }
-	                }
-				}else {
+				if (dc.getCollectProperty().getCollectSrc() == CollectSignalSource.SWITCH) {
+					if (dc.getCollectProperty().getCurrentValue() != null) {
+						if (dc.getCollectProperty().getCurrentValue() == 1) {
+							map.put("currentValue", "开");
+						} else {
+							map.put("currentValue", "关");
+						}
+					}
+				} else {
 					map.put("currentValue", dc.getCollectProperty().getValueWithSymbol());
 				}
 				json = mapper.writeValueAsString(map);
 				if (null != json) {
 					sendMessage(json);
 				}
-				if(dev.getParent() == null || !(dev.getParent() instanceof DevCollectSignalContainer)) {
+				if (dev.getParent() == null || !(dev.getParent() instanceof DevCollectSignalContainer)) {
 					DevChannelBridgeHelper.getIns().sendDevOrder(dev, dev.createInitOrder(), true);
 				}
-			}else if(!(dev instanceof IStateDev)) {
+			} else if (!(dev instanceof IStateDev)) {
 				DevChannelBridgeHelper.getIns().sendDevOrder(dev, dev.createInitOrder(), true);
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(dev instanceof DevHaveChild) {
-			for(Device childDev : ((DevHaveChild)dev).getListDev()) {
+		if (dev instanceof DevHaveChild) {
+			for (Device childDev : ((DevHaveChild) dev).getListDev()) {
 				refreshDevState(childDev);
 			}
 		}
-		
+
 	}
-//	public void isOnLine() {
-//		boolean isOnLine = true;
-//		if(first) {
-//			first = false;
-//		}else {
-//			isOnLine = onLine;
-//		}
-//		onLine = false;
-//		//for(MsgC)
-//	}
+	// public void isOnLine() {
+	// boolean isOnLine = true;
+	// if(first) {
+	// first = false;
+	// }else {
+	// isOnLine = onLine;
+	// }
+	// onLine = false;
+	// //for(MsgC)
+	// }
 }

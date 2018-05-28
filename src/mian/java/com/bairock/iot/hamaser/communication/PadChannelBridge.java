@@ -42,6 +42,8 @@ public class PadChannelBridge {
 
 	private StringBuilder sbReceived = new StringBuilder();
 	
+	private OnPadConnectedListener onPadConnectedListener;
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -64,6 +66,10 @@ public class PadChannelBridge {
 
 	public void setChannelId(String channelId) {
 		this.channelId = channelId;
+	}
+
+	public void setOnPadConnectedListener(OnPadConnectedListener onPadConnectedListener) {
+		this.onPadConnectedListener = onPadConnectedListener;
 	}
 
 	public void channelReceived(String msg) {
@@ -138,6 +144,9 @@ public class PadChannelBridge {
 			}
 			userName = arryMsg[0];
 			groupName = arryMsg[1];
+			if(null != onPadConnectedListener) {
+				onPadConnectedListener.onPadConnected(userName, groupName);
+			}
 		} else if (msg.startsWith("S")) {
 			int index = msg.indexOf(":");
 			if (index < 0 || index + 3 > msg.length()) {
@@ -436,5 +445,9 @@ public class PadChannelBridge {
 	public void sendMessageNotReponse(String msg) {
 		System.out.println("PadChannelBridge sendMessageNotReponse "+ " userName:" + userName + " groupName:" + groupName + " msg:" + msg);
 	    getChannel().writeAndFlush(Unpooled.copiedBuffer(msg.getBytes()));
+	}
+	
+	public interface OnPadConnectedListener {
+		void onPadConnected(String userName, String groupName);
 	}
 }
