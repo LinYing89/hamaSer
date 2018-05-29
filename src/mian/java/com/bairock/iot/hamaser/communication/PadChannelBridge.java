@@ -229,7 +229,7 @@ public class PadChannelBridge {
 			if(null == dev) {
 				return;
 			}
-			setDevCtrlModel(dev);
+			
 			String state = cutMsg.substring(index + 1);
 			if (state.startsWith("b")) {
 				// gear
@@ -254,6 +254,7 @@ public class PadChannelBridge {
 				//sendNormalMessage("1", dev, userName, groupName, false);
 			} else {
 				// 
+				setDevCtrlModel(dev);
 				dev.handle(state);
 				//sendAffectMessage("1", dev, userName, groupName);
 			}
