@@ -24,6 +24,7 @@ public class StartUpListener implements ServletContextListener {
 
 	private static EntityManagerFactory em = null;
 	public static String SERVER_IP;
+	public static String DOWNLOAD_PATH;
 	private UpDownloadServer upDownloadServer;
 	private PadServer padServer;
 	private DevServer devServer;
@@ -56,6 +57,7 @@ public class StartUpListener implements ServletContextListener {
 			PadServer.PORT = Integer.parseInt(properties.get("padPort").toString());
 			DevServer.PORT = Integer.parseInt(properties.get("devPort").toString());
 			UpDownloadServer.PORT = Integer.parseInt(properties.get("upDownloadPort").toString());
+			DOWNLOAD_PATH = properties.get("downloadPath").toString();
 			System.out.println("padPort:" + PadServer.PORT + " devPort:" + DevServer.PORT + " loadPort:" + UpDownloadServer.PORT);
 		} catch (Exception e) {
 			e.printStackTrace();

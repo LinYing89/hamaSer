@@ -3,5 +3,6 @@ encoding//src/mian/java/com/bairock/iot/hamaser/communication/PadChannelBridge.j
 encoding//src/mian/java/com/bairock/iot/hamaser/communication/PadChannelBridgeHelper.java=UTF-8
 encoding//src/mian/java/com/bairock/iot/hamaser/dao/RegisterFormBean.java=UTF-8
 encoding//src/mian/java/com/bairock/iot/hamaser/dao/UserDao.java=UTF-8
+encoding//src/mian/java/com/bairock/iot/hamaser/listener/SessionHelper.java=UTF-8
 encoding//src/mian/java/com/bairock/iot/hamaser/servlet/ClientLoginServlet.java=UTF-8
 encoding//src/mian/java/com/bairock/iot/hamaser/servlet/LoginServlet.java=UTF-8

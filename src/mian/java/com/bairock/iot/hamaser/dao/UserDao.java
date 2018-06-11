@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.bairock.iot.hamaser.listener.SessionHelper;
-import com.bairock.iot.hamaser.listener.StartUpListener;
 import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.linkage.Effect;
@@ -47,7 +46,7 @@ public class UserDao {
 
 	public boolean isFind(String userName, String psd) {
 		boolean res = false;
-		EntityManager eManager2 = StartUpListener.getEntityManager();
+		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
 		try {
 			eManager2.getTransaction().begin();
 
@@ -62,15 +61,13 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
-		} finally {
-			eManager2.close();
 		}
 		return res;
 	}
 
 	public String findPsdByName(String userName) {
 		String res = null;
-		EntityManager eManager2 = StartUpListener.getEntityManager();
+		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
 		try {
 			eManager2.getTransaction().begin();
 
@@ -83,8 +80,6 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
-		} finally {
-			eManager2.close();
 		}
 		return res;
 	}
@@ -120,7 +115,7 @@ public class UserDao {
 
 	public String findDevGroupPetName(String userName, String devGroupName, String devGroupPsd) {
 		String res = null;
-		EntityManager eManager2 = StartUpListener.getEntityManager();
+		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
 		try {
 			eManager2.getTransaction().begin();
 
@@ -140,16 +135,13 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
-		} finally {
-			eManager2.close();
 		}
-		//eManager2.close();
 		return res;
 	}
 	
 	public User findByUserName(String userName) {
 		User res = null;
-		EntityManager eManager2 = StartUpListener.getEntityManager();
+		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
 		try {
 			eManager2.getTransaction().begin();
 
@@ -163,15 +155,13 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
-		} finally {
-			eManager2.close();
 		}
 		return res;
 	}
 	
 	public User findByUserNameInit(String userName) {
 		User res = null;
-		EntityManager eManager2 = StartUpListener.getEntityManager();
+		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
 		try {
 			eManager2.getTransaction().begin();
 
@@ -188,15 +178,13 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
-		} finally {
-			eManager2.close();
 		}
 		return res;
 	}
 
 	public boolean add(User user) {
 		boolean res = false;
-		EntityManager eManager2 = StartUpListener.getEntityManager();
+		EntityManager eManager2 = SessionHelper.getEntityManager(user.getName());
 		try {
 			eManager2.getTransaction().begin();
 			eManager2.persist(user);
@@ -205,15 +193,13 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			res = false;
-		}finally {
-			eManager2.close();
 		}
 		return res;
 	}
 	
 	public User findUserInit(String userName, String groupName) {
 		User user = null;
-		EntityManager eManager2 = StartUpListener.getEntityManager();
+		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
 		try {
 			eManager2.getTransaction().begin();
 
@@ -233,11 +219,6 @@ public class UserDao {
 				initGroup(myGroup);
 			}
 			eManager2.getTransaction().commit();
-//			user = new User();
-//			user.setName(user1.getName());
-//			user.addGroup(myGroup);
-//			user.getListDevGroup().clear();
-//			user.addGroup(myGroup);
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
@@ -247,7 +228,7 @@ public class UserDao {
 	
 	public Device findDeviceByUserNameGroupNameDevCoding(String userName, String groupName, String devCoding) {
 		Device device = null;
-		EntityManager eManager2 = StartUpListener.getEntityManager();
+		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
 		try {
 			eManager2.getTransaction().begin();
 
@@ -331,19 +312,4 @@ public class UserDao {
 			}
 		}
 	}
-	
-//	public boolean update(User user) {
-//		boolean res = false;
-//		EntityManager eManager2 = SessionHelper.getEntityManager(user.getName());
-//		try {
-//			eManager2.getTransaction().begin();
-//			eManager2.merge(user);
-//			eManager2.getTransaction().commit();
-//			res = true;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			eManager2.getTransaction().rollback();
-//		} 
-//		return res;
-//	}
 }

@@ -7,34 +7,31 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-	+ request.getServerName() + ":" + request.getServerPort()
-	+ path + "/";
-	
-	String managerName = ((User)request.getSession().getAttribute(SessionHelper.USER)).getName();
-	DevGroup user = (DevGroup)request.getSession().getAttribute(SessionHelper.DEV_GROUP);
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+
+	String managerName = ((User) request.getSession().getAttribute(SessionHelper.USER)).getName();
+	DevGroup user = (DevGroup) request.getSession().getAttribute(SessionHelper.DEV_GROUP);
 	List<Device> listDev = user.findListIStateDev(true);
 	Collections.sort(listDev);
 	List<DevCollect> listClimate = user.findListCollectDev(true);
 	Collections.sort(listClimate);
-	
+
 	request.setAttribute("listDevice", listDev);
 	request.setAttribute("listClimate", listClimate);
-// 	String ctrlable = (String)request.getSession().getAttribute("ctrlable");
-// 	if(null == ctrlable){
-// 		ctrlable = "true";
-// 	}
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-<meta name="description" content="">
-<meta name="author" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+	integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+	crossorigin="anonymous">
 
 <title>设备</title>
 
@@ -59,7 +56,7 @@
 			$("#control_device").hide();
 			$("#climate_device").show();
 		});
-		$("#btn_refresh").click(function() {
+		$("#a_refresh").click(function() {
 			post('{"jsonId":2}');
 		});
 		
@@ -168,11 +165,6 @@
 			trDevice[0].setAttribute("class", "d" + devCoding);
 			var tdClimate = $("#tbody_climate").find(".d"+devCoding+"v");
 			tdClimate[0].innerHTML = value;
-// 			var tdClimateP = $("#tbody_climate").find(".d"+devCoding+"p");
-// 			tdClimateP[0].innerHTML = perValue + "%";
-// 			//per prograss
-// 			var tdClimatePb = $("#tbody_climate").find(".d"+devCoding+"pb");
-// 			tdClimatePb[0].style.width= perValue + "%";
 		}else if(obj.jsonId == 7){
 			//终端状态
 			var state = obj.state;
@@ -182,7 +174,7 @@
 			}else{
 				text = "终端:在线";
 			}
-			var btnPadState = $(".container").find("#btn_pad_state");
+			var btnPadState = $(".navbar").find("#a_pad_state");
 			btnPadState[0].innerHTML = text;
 		}
 	}
@@ -210,57 +202,50 @@
 	
 	var manage = '<%=managerName%>';
 	var group = '<%=user.getName()%>';
-	
-	websocket.onopen = function(){
- 		var jsonUser = new Object();
- 		jsonUser.jsonId = 1;
- 		jsonUser.userName = manage;
- 		jsonUser.groupName = group
+
+	websocket.onopen = function() {
+		var jsonUser = new Object();
+		jsonUser.jsonId = 1;
+		jsonUser.userName = manage;
+		jsonUser.groupName = group
 		send(JSON.stringify(jsonUser));
 	};
-	
-	websocket.onmessage = function(event){
-// 		alert("onmessage:" + event.data);
+
+	websocket.onmessage = function(event) {
+		// 		alert("onmessage:" + event.data);
 		//refreshState(event.data);
 		refreshState2(event.data);
 	};
-	
-	websocket.onclose = function(){
-// 		alert("onclose");
+
+	websocket.onclose = function() {
+		// 		alert("onclose");
 	};
-	
-	function closeWebSocket(){
+
+	function closeWebSocket() {
 		websocket.close();
 	}
-	
-	function send(message){
+
+	function send(message) {
 		websocket.send(message);
 	}
 </script>
 </head>
 
 <body>
-<nav class="navbar navbar-default" role="navigation">
-   <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" 
-         data-target="#example-navbar-collapse">
-         <span class="sr-only">切换导航</span>
-         <span class="icon-bar"></span>
-         <span class="icon-bar"></span>
-         <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#"><%=managerName %>-<%=user.getName() %>:<%=user.getPetName() %></a>
-   </div>
-   <div class="collapse navbar-collapse" id="example-navbar-collapse">
-      <ul class="nav navbar-nav">
-         <li><a href="<%=path%>/Logout">注销</a></li>
-      </ul>
-   </div>
-</nav>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<span class="navbar-text">
+    		<%=managerName%>-<%=user.getName()%>:<%=user.getPetName()%>
+  		</span>
+	  	<a class="nav-link" href="<%=path%>/Logout">注销</a>
+	  	<a id="a_refresh" class="nav-link" href="#">刷新状态</a>
+	  	<span id="a_pad_state" class="navbar-text">
+    		终端状态
+  		</span>
+	</nav>
 
 	<div class="container">
 		
-		<div class="row clearfix">
+		<div class="row">
 			<div class="col-md-12 column">
 				<ul class="nav nav-tabs">
 					<li id="li_device" class="active"><a href="#">电器列表</a></li>
@@ -268,14 +253,8 @@
 					<li id="li_climate"><a href="#">配置</a></li>
 				</ul>
 			</div>
-			
-			<div class="col-md-12 column">
-				<div class="btn-group">
-					<button id="btn_refresh" class="btn btn-default" style="float:left">刷新状态</button>
-					<button id="btn_pad_state" class="btn btn-default disabled" style="float:left">终端状态</button>
-				</div>
-			</div>
 		</div>
+
 		<div id="control_device">
 			<table class="table">
 				<thead>
@@ -287,24 +266,27 @@
 				<tbody id="tbody_device">
 					<c:forEach items="${listDevice}" var="device">
 						<tr class="d${device.longCoding} danger">
-							<td style="width:40%">
+							<td style="width: 40%">
 								<div>${device.name}</div>
 								<div>${device.alias}</div>
 							</td>
-							<td style="width:45%">
+							<td style="width: 45%">
 								<div class="btn-group">
-									<button style="width:29%; float: left" type="button" class="btn btn-default btn_ctrl d${device.longCoding}_3" 
+									<button style="width: 29%; float: left" type="button"
+										class="btn btn-default btn_ctrl d${device.longCoding}_3"
 										onclick="ctrlDev('${device.parent.coding}', '${device.subCode }', '3')">开
 									</button>
-									<button style="width:42%; float: left" type="button" class="btn btn-default d${device.longCoding}_0 btn_ctrl active" 
+									<button style="width: 42%; float: left" type="button"
+										class="btn btn-default d${device.longCoding}_0 btn_ctrl active"
 										onclick="ctrlDev('${device.parent.coding}', '${device.subCode }', '0')">自动
 									</button>
-									<button style="width:29%; float: left" type="button" class="btn btn-default  btn_ctrl d${device.longCoding}_4" 
+									<button style="width: 29%; float: left" type="button"
+										class="btn btn-default  btn_ctrl d${device.longCoding}_4"
 										onclick="ctrlDev('${device.parent.coding}', '${device.subCode }', '4')">关
 									</button>
 								</div>
 							</td>
-							<td id="d${device.longCoding}_a" style="width:15%">离线</td>
+							<td id="d${device.longCoding}_a" style="width: 15%">离线</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -317,7 +299,6 @@
 						<th>位号</th>
 						<th>名称</th>
 						<th>值</th>
-<!-- 						<th>百分比</th> -->
 					</tr>
 				</thead>
 				<tbody id="tbody_climate">
@@ -326,22 +307,23 @@
 							<td>${climate.alias}</td>
 							<td>${climate.name}</td>
 							<td class="d${climate.longCoding }v">${climate.collectProperty.currentValue}${climate.collectProperty.unitSymbol}</td>
-<%-- 							<td class="d${climate.coding }p">${climate.collectProperty.percent}%</td> --%>
 						</tr>
-<!-- 						<tr> -->
-<!-- 							<td colspan="4"> -->
-<!-- 							<div class="progress progress-striped active"> -->
-<%-- 							   <div class="d${climate.coding}pb progress-bar" role="progressbar" aria-valuenow="10"  --%>
-<%-- 							      aria-valuemin="0" aria-valuemax="100" style="width: ${climate.collectProperty.percent}%;"> --%>
-<!-- 							   </div> -->
-<!-- 							</div> -->
-<!-- 							</td> -->
-<!-- 						</tr> -->
 					</c:forEach>
 				</tbody>
 			</table>
 		</div>
 	</div>
 	<iframe name=upload_iframe width=0 height=0></iframe>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+		integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+		crossorigin="anonymous"></script>
 </body>
 </html>

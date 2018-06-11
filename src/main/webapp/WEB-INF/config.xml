@@ -4,5 +4,6 @@
 	<entry key="serverIp">localhost</entry>
     <entry key="padPort">10002</entry>
     <entry key="devPort">10003</entry>
-    <entry key="upDownloadPort">10004</entry>  
-</properties>  
+    <entry key="upDownloadPort">10004</entry>
+    <entry key="downloadPath">E:\appdownload</entry>
+</properties>

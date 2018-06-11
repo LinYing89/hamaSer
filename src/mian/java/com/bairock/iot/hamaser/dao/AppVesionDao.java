@@ -28,4 +28,22 @@ public class AppVesionDao {
 		}
 		return listAppVersion;
 	}
+	
+	public AppVersion findLastApp() {
+		AppVersion app = null;
+		EntityManager eManager2 = StartUpListener.getEntityManager();
+		try {
+			eManager2.getTransaction().begin();
+
+			TypedQuery<AppVersion> query = eManager2.createQuery("from AppVersion app where app.appVc = (select max(a.appVc) from AppVersion a)", AppVersion.class);
+			app = query.getSingleResult();
+			eManager2.getTransaction().commit();
+		} catch (Exception e) {
+			eManager2.getTransaction().rollback();
+			e.printStackTrace();
+		} finally {
+			eManager2.close();
+		}
+		return app;
+	}
 }
