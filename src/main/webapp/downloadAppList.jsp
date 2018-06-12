@@ -11,7 +11,7 @@
 	<h1>呱呱物联app下载(Android)</h1>
 	<ul>
 	<c:forEach items="${listApp}" var="app">
-		<li><a href="#">${app.appName}</a></li>
+		<li><a href="#">${app.appName}</a> 发布时间：${app.releaseTime}</li>
 	</c:forEach>
 	</ul>
 	

@@ -52,7 +52,7 @@
 			<ul class="nav navbar-nav">
 				<li><a href="<%=path %>/servlet/LoginServlet?name=ggsb">公共设备</a></li>
 <!-- 				<li><a href="javascript:void(0)" onclick="post('<%=path %>/servlet/LoginServlet', 'GGSB', 'a123456')">公共设备</a></li> -->
-				<li><a href="<%=path %>/servlet/DownloadServlet">下载</a></li>
+				<li><a href="<%=path %>/DownloadApp">下载</a></li>
 			</ul>
 		</div>
 	</nav>
