@@ -36,9 +36,9 @@
 <title>设备</title>
 
 <!-- Bootstrap core CSS -->
-<link href="<%=path%>/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<script src="<%=path%>/jquery/jquery-2.1.4.min.js"></script>
-<script src="<%=path%>/bootstrap/js/bootstrap.min.js"></script>
+<%-- <link href="<%=path%>/bootstrap/css/bootstrap.min.css" rel="stylesheet"> --%>
+<%-- <script src="<%=path%>/jquery/jquery-2.1.4.min.js"></script> --%>
+<%-- <script src="<%=path%>/bootstrap/js/bootstrap.min.js"></script> --%>
 
 <script type="text/javascript">
 	$(document).ready(function() {
