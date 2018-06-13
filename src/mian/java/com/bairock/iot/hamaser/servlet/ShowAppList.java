@@ -15,17 +15,26 @@ import com.bairock.iot.intelDev.user.AppVersion;
 /**
  * Servlet implementation class DownloadApp
  */
-@WebServlet(description = "download guagua app for android", urlPatterns = { "/DownloadApp" })
-public class DownloadAppList extends HttpServlet {
+@WebServlet(description = "download guagua app for android", urlPatterns = { "/ShowAppList" })
+public class ShowAppList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<AppVersion> listAppVersion = new AppVesionDao().findApps();
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("UTF-8");
+		
+		boolean debug = false;
+		try {
+			debug = Boolean.parseBoolean(request.getParameter("debug"));
+		}catch(Exception e) {}
+		
+		List<AppVersion> listAppVersion = new AppVesionDao().findApps(debug);
 		request.setAttribute("listApp", listAppVersion);
-		request.getRequestDispatcher("/downloadAppList.jsp").forward(request, response);
+		if(debug) {
+			request.getRequestDispatcher("/downloadAppDebugList.jsp").forward(request, response);
+		}else {
+			request.getRequestDispatcher("/downloadAppReleaseList.jsp").forward(request, response);
+		}
 	}
 
 	/**

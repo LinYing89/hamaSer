@@ -23,33 +23,48 @@ public class Download extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String appName = (String) request.getParameter("appName");
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+
+		String appName = request.getParameter("appName");
+		if (null == appName) {
+			return;
+		}
+
 		appName = new String(appName.getBytes("ISO-8859-1"), "UTF-8");
 
-		//String fileName = "guagua_" + appV + ".apk";
-		String appPath = StartUpListener.DOWNLOAD_PATH + File.separator + appName;
-		System.out.println("appPath" + appPath);
-		// 构建输入流
-		InputStream in = new FileInputStream(appPath);
-		// 下载
-		response.setCharacterEncoding("utf-8");
-		// 通知客户端以下载的方式打开
-		 response.setContentType("application/x-download");
-		// response.setContentType("application/force-download");
-//		response.setContentType("application/x-msdownload");
-		response.addHeader("Content-Disposition", "attachment;filename=" + appName);
-		OutputStream out = response.getOutputStream();
-
+		boolean debug = false;
 		try {
-			int len = 0;
-			byte b[] = new byte[1024];
-			while ((len = in.read(b)) > 0) {
-				out.write(b, 0, len);
+			debug = Boolean.parseBoolean(request.getParameter("debug"));
+		} catch (Exception e) {
+		}
+
+		String appPath = StartUpListener.getAppPath(debug) + File.separator + appName;
+		System.out.println("appPath" + appPath);
+		try {
+			// 构建输入流
+			InputStream in = new FileInputStream(appPath);
+			// 下载
+			// 通知客户端以下载的方式打开
+			response.setContentType("application/x-download");
+			// response.setContentType("application/force-download");
+			// response.setContentType("application/x-msdownload");
+			response.addHeader("Content-Disposition", "attachment;filename=" + appName);
+			OutputStream out = response.getOutputStream();
+
+			try {
+				int len = 0;
+				byte b[] = new byte[1024];
+				while ((len = in.read(b)) > 0) {
+					out.write(b, 0, len);
+				}
+			} finally {
+				out.flush();
+				in.close();
+				out.close();
 			}
-		} finally {
-			out.flush();
-			in.close();
-			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

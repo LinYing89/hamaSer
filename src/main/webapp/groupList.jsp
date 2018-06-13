@@ -87,6 +87,7 @@ if(null == ctrlable){
 		<div class="collapse navbar-collapse" id="example-navbar-collapse">
 			<ul class="nav navbar-nav">
 				<li><a href="<%=path%>/Logout">注销</a></li>
+				<li><a href="<%=path %>/ShowAppList?debug=false">下载</a></li>
 			</ul>
 		</div>
 	</nav>

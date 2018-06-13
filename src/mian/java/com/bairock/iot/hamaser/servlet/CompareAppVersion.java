@@ -24,11 +24,17 @@ public class CompareAppVersion extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("UTF-8");
 		
 		String strAppVc = request.getParameter("appVc");
+		boolean debug = false;
+		try {
+			debug = Boolean.parseBoolean(request.getParameter("debug"));
+		}catch(Exception e) {}
+		
 		int iAppVc = Integer.parseInt(strAppVc);
-		AppVersion appVersion = new AppVesionDao().findLastApp();
+		AppVersion appVersion = new AppVesionDao().findLastApp(debug);
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<>();
 		if(null != appVersion && appVersion.getAppVc() > iAppVc) {
