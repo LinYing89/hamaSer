@@ -1,6 +1,7 @@
 package com.bairock.iot.hamaser.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -27,6 +28,7 @@ public class AppVesionDao {
 		} finally {
 			eManager2.close();
 		}
+		Collections.reverse(listAppVersion);
 		return listAppVersion;
 	}
 	

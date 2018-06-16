@@ -33,6 +33,13 @@
 	integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
 	crossorigin="anonymous">
 
+  
+	<!-- Bootstrap core CSS -->
+	<link href="<%=path%>/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<%=path%>/jquery/jquery-ui.min.css" rel="stylesheet">
+	<script src="<%=path%>/jquery/jquery-2.1.4.min.js"></script>
+	<script src="<%=path%>/jquery/jquery-ui.min.js"></script>
+	<script src="<%=path%>/bootstrap/js/bootstrap.min.js"></script>
 <title>设备</title>
 
 <!-- Bootstrap core CSS -->

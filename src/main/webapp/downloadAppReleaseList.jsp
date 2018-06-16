@@ -31,7 +31,7 @@
 			<tbody>
 				<c:forEach items="${listApp}" var="app">
 					<tr>
-						<td><a class="a_release" href="#">${app.appName}<br/></a>版本说明:${app.appInfo}</td>
+						<td><a class="a_release" href="#">${app.appName}</a><br />版本说明:${app.appInfo}</td>
 						<td>${app.releaseTime}</td>
 					</tr>
 				</c:forEach>
