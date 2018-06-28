@@ -4,6 +4,7 @@ import com.bairock.iot.hamaser.dao.DevGroupDao;
 import com.bairock.iot.hamaser.dao.UserDao;
 import com.bairock.iot.hamaser.listener.SessionHelper;
 import com.bairock.iot.intelDev.communication.DevChannelBridge;
+import com.bairock.iot.intelDev.communication.MessageAnalysiser;
 import com.bairock.iot.intelDev.device.CtrlModel;
 import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.DevStateHelper;
@@ -58,26 +59,22 @@ public class MyDevChannelBridge extends DevChannelBridge {
 		if (!msg.contains("#")) {
 			return;
 		}
-		String cutMsg = msg.substring(0, msg.indexOf("#"));
+		String[] codingState = MessageAnalysiser.findCodingState(msg);
 
-		String[] msgs = cutMsg.split(":");
-		if (msgs.length < 2) {
+		if (codingState.length < 2) {
 			return;
 		}
-		String coding = null;
+		String[] msgs = codingState[1].split(":");
+		String coding = codingState[0];
 		String userName = null;
 		String groupName = null;
-		String state = null;
+		String state = codingState[1];
 		for (String str : msgs) {
-			if (str.startsWith("I")) {
-				coding = str.substring(1);
-			} else if (str.startsWith("u")) {
+			if (str.startsWith("u")) {
 				userName = str.substring(1);
 			} else if (str.startsWith("g")) {
 				groupName = str.substring(1);
-			} else {
-				state = str;
-			}
+			} 
 		}
 		if (null == getDevice()) {
 			if (null != coding && null != userName && null != groupName) {
@@ -87,10 +84,10 @@ public class MyDevChannelBridge extends DevChannelBridge {
 					unrecognizableCount++;
 					if (unrecognizableCount >= 2) {
 						unrecognizableCount = 0;
-						String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
-						order = OrderHelper.getOrderMsg(order);
-						sendOrder(order);
-						System.out.println("MyDevChannelBridge set to local" + order);
+//						String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
+//						order = OrderHelper.getOrderMsg(order);
+//						sendOrder(order);
+//						System.out.println("MyDevChannelBridge set to local" + order);
 					}
 					return;
 				}
@@ -122,10 +119,10 @@ public class MyDevChannelBridge extends DevChannelBridge {
 				unrecognizableCount++;
 				if (unrecognizableCount >= 2) {
 					unrecognizableCount = 0;
-					String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
-					order = OrderHelper.getOrderMsg(order);
-					sendOrder(order);
-					System.out.println("MyDevChannelBridge set to local" + order);
+//					String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
+//					order = OrderHelper.getOrderMsg(order);
+//					sendOrder(order);
+//					System.out.println("MyDevChannelBridge set to local" + order);
 					return;
 				}
 			}

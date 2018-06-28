@@ -7,6 +7,7 @@ import com.bairock.iot.hamaser.communication.MyOnCtrlModelChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnCurrentValueChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnGearChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnStateChangedListener;
+import com.bairock.iot.hamaser.communication.MyOnValueTriggedListener;
 import com.bairock.iot.hamaser.listener.SessionHelper;
 import com.bairock.iot.hamaser.listener.StartUpListener;
 import com.bairock.iot.intelDev.device.CtrlModel;
@@ -121,6 +122,7 @@ public class DevGroupDao {
 		if(device instanceof DevCollect) {
 			DevCollect dc = (DevCollect)device;
 			dc.getCollectProperty().setOnCurrentValueChanged(new MyOnCurrentValueChangedListener());
+			dc.getCollectProperty().setOnValueTriggedListener(new MyOnValueTriggedListener());
 		}
 	}
 }

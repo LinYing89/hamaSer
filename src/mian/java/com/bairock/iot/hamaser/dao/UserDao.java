@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 import com.bairock.iot.hamaser.listener.SessionHelper;
 import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.Device;
+import com.bairock.iot.intelDev.device.DeviceAssistent;
 import com.bairock.iot.intelDev.linkage.Effect;
 import com.bairock.iot.intelDev.linkage.Linkage;
 import com.bairock.iot.intelDev.linkage.LinkageCondition;
@@ -237,14 +238,15 @@ public class UserDao {
 			query.setParameter("name", userName);
 			User user1 = query.getSingleResult();
 			DevGroup myGroup = null;
+			Device devInDb = null;
 			if(null != user1) {
 				for(DevGroup group : user1.getListDevGroup()){
 					if(group.getName().equals(groupName)) {
 						myGroup = group;
 						for(Device dev : group.getListDevice()) {
 							if(dev.getCoding().equals(devCoding)) {
-								device = dev;
-								initDevice(device);
+								initDevice(dev);
+								devInDb = dev;
 								break;
 							}
 						}
@@ -254,17 +256,17 @@ public class UserDao {
 				//initGroup(myGroup);
 			}
 			eManager2.getTransaction().commit();
-			if(null == myGroup || null == device) {
+			if(null == myGroup || null == devInDb) {
 				return null;
 			}
+			device = DeviceAssistent.createDeviceByCoding(devInDb.getCoding());
+			Device.copyDevice(device, devInDb);
 			User user = new User();
 			user.setName(user1.getName());
 			DevGroup group = new DevGroup();
 			group.setName(myGroup.getName());
 			user.addGroup(group);
 			group.addDevice(device);
-//			user.getListDevGroup().clear();
-//			user.addGroup(myGroup);
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();

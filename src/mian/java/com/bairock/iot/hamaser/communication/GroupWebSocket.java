@@ -199,7 +199,7 @@ public class GroupWebSocket {
 				map = new HashMap<>();
 				DevCollect dc = (DevCollect) dev;
 				map.put("jsonId", 6);
-				map.put("devCoding", dev.getCoding());
+				map.put("devCoding", dev.getLongCoding());
 				if (dc.getCollectProperty().getCollectSrc() == CollectSignalSource.SWITCH) {
 					if (dc.getCollectProperty().getCurrentValue() != null) {
 						if (dc.getCollectProperty().getCurrentValue() == 1) {

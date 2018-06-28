@@ -10,7 +10,7 @@ import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.Device.OnStateChangedListener;
 import com.bairock.iot.intelDev.device.IStateDev;
 import com.bairock.iot.intelDev.device.devcollect.DevCollect;
-import com.bairock.iot.intelDev.device.devcollect.DevCollectSignalContainer;
+import com.bairock.iot.intelDev.device.devcollect.DevCollectClimateContainer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,26 +23,34 @@ public class MyOnStateChangedListener implements OnStateChangedListener {
 
 	@Override
 	public void onNormalToAbnormal(Device dev) {
-		if(dev instanceof DevCollect || dev instanceof DevCollectSignalContainer){
+		if(dev instanceof DevCollectClimateContainer){
             RefreshCollectorValueHelper.getIns().endRefresh(dev);
         }
+//		if(dev instanceof DevCollect || dev instanceof DevCollectSignalContainer){
+//            RefreshCollectorValueHelper.getIns().endRefresh(dev);
+//        }
 	}
 
 	@Override
 	public void onAbnormalToNormal(Device dev) {
-		boolean canAdd = false;
-        if(dev instanceof DevCollectSignalContainer){
-            canAdd = true;
-        }else if(dev instanceof DevCollect){
-            if(dev.getParent() == null){
-                canAdd = true;
-            }else if(!(dev.getParent() instanceof DevCollectSignalContainer)){
-                canAdd = true;
-            }
-        }
-        if(canAdd){
+		
+		if(dev instanceof DevCollectClimateContainer){
             RefreshCollectorValueHelper.getIns().RefreshDev(dev);
         }
+		
+//		boolean canAdd = false;
+//		if(dev instanceof DevCollectSignalContainer){
+//            canAdd = true;
+//        }else if(dev instanceof DevCollect){
+//            if(dev.getParent() == null){
+//                canAdd = true;
+//            }else if(!(dev.getParent() instanceof DevCollectSignalContainer)){
+//                canAdd = true;
+//            }
+//        }
+//        if(canAdd){
+//            RefreshCollectorValueHelper.getIns().RefreshDev(dev);
+//        }
 	}
 
 	private void refreshUi(Device device) {

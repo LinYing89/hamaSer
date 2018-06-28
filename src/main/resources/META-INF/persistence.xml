@@ -7,6 +7,7 @@
 		<class>com.bairock.iot.intelDev.device.devcollect.CollectProperty</class>
 		<class>com.bairock.iot.intelDev.device.devcollect.DevCollect</class>
 		<class>com.bairock.iot.intelDev.device.devcollect.Pressure</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.ValueTrigger</class>
 		<class>com.bairock.iot.intelDev.device.DevHaveChild</class>
 		<class>com.bairock.iot.intelDev.device.Device</class>
 		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitch</class>
@@ -15,6 +16,9 @@
 		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchThreeState</class>
 		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchTwoRoad</class>
 		<class>com.bairock.iot.intelDev.device.devswitch.SubDev</class>
+		<class>com.bairock.iot.intelDev.device.remoter.RemoterContainer</class>
+		<class>com.bairock.iot.intelDev.device.remoter.Remoter</class>
+		<class>com.bairock.iot.intelDev.device.remoter.RemoterKey</class>
 		<class>com.bairock.iot.intelDev.linkage.ChainHolder</class>
 		<class>com.bairock.iot.intelDev.linkage.Effect</class>
 		<class>com.bairock.iot.intelDev.linkage.guagua.GuaguaHolder</class>
@@ -34,6 +38,10 @@
 		<class>com.bairock.iot.intelDev.linkage.timing.MyTime</class>
 		<class>com.bairock.iot.intelDev.device.DevContainer</class>
 		<class>com.bairock.iot.intelDev.device.devcollect.DevCollectSignalContainer</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.DevCollectClimateContainer</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.Temperature</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.Humidity</class>
+		<class>com.bairock.iot.intelDev.device.devcollect.Formaldehyde</class>
 		<class>com.bairock.iot.intelDev.device.GuaguaMouth</class>
 		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchXRoad</class>
 		
@@ -44,6 +52,7 @@
 			<property name="javax.persistence.jdbc.password" value="root"/>
 			<property name="hibernate.show_sql" value="true"/>
 <!-- 			<property name="hibernate.hbm2ddl.auto" value="create"/> -->
+<!-- 			<property name="hibernate.hbm2ddl.auto" value="update"/> -->
  			<property name="hibernate.hbm2ddl.auto" value="none"/>
 		</properties>
 	</persistence-unit>
