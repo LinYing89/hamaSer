@@ -19,12 +19,13 @@ public class MyOnValueTriggedListener implements CollectProperty.OnValueTriggedL
 	public void onValueTrigged(ValueTrigger trigger, float value) {
 		System.out.println(trigger.getCollectProperty().getDevCollect().getLongCoding() + " msg:" + trigger.getMessage() + " -" + value);
 		
-		//pushToTag(trigger, value);
-		pushToAccount(trigger, value);
+		pushToTag(trigger, value);
+//		pushToAccount(trigger, value);
         
         //JSONObject ret = xinge.pushSingleDevice("d8d66c26421d53be42148b227fd943a55675d213", message1);
 	}
 	
+	@SuppressWarnings("unused")
 	private void pushToAccount(ValueTrigger trigger, float value) {
 		Message message1 = createMessage(trigger, value);
         
@@ -38,7 +39,6 @@ public class MyOnValueTriggedListener implements CollectProperty.OnValueTriggedL
         System.out.println("MyOnValueTriggedListener " + ret);
 	}
 	
-	@SuppressWarnings("unused")
 	private void pushToTag(ValueTrigger trigger, float value) {
 		List<String> listTag = new ArrayList<>();
 		DevGroup dg = trigger.getCollectProperty().getDevCollect().findSuperParent().getDevGroup();
