@@ -29,7 +29,7 @@ public class MyOnValueTriggedListener implements CollectProperty.OnValueTriggedL
 	private void pushToAccount(ValueTrigger trigger, float value) {
 		Message message1 = createMessage(trigger, value);
         
-        //XingeApp.pushAccountAndroid(2100297444, "b328d1fa35307949d7809b6453f3ac8c", "test", "≤‚ ‘", "test123_1"));
+        //XingeApp.pushAccountAndroid(2100297444, "b328d1fa35307949d7809b6453f3ac8c", "test", "test", "test123_1"));
         
         DevGroup dg = trigger.getCollectProperty().getDevCollect().findSuperParent().getDevGroup();
         String assount = dg.getUser().getName() + "_" + dg.getName();
@@ -56,7 +56,7 @@ public class MyOnValueTriggedListener implements CollectProperty.OnValueTriggedL
 		Message message1 = new Message();
         message1.setType(Message.TYPE_NOTIFICATION);
         message1.setTitle(trigger.getCollectProperty().getDevCollect().getName());
-        message1.setContent(trigger.getMessage() + " (µ±«∞÷µ:" + value + ")");
+        message1.setContent(trigger.getMessage() + " (ÂΩìÂâçÂÄº:" + value + ")");
         
         ClickAction ca = new ClickAction();
         ca.setAtyAttrIntentFlag(268435456 | 2097152);

@@ -51,7 +51,6 @@ public class StartUpListener implements ServletContextListener {
 		DevChannelBridgeHelper.DEV_CHANNELBRIDGE_NAME = MyDevChannelBridge.class.getName();
 
 		try {
-			// ∂¡»°≈‰÷√Œƒº˛
 			Properties properties = new Properties();
 			properties.loadFromXML(new FileInputStream(sce.getServletContext().getRealPath("/WEB-INF/config.xml")));
 			SERVER_IP = properties.get("serverIp").toString();

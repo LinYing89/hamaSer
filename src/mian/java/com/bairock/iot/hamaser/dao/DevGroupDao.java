@@ -3,6 +3,7 @@ package com.bairock.iot.hamaser.dao;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import com.bairock.iot.hamaser.communication.MyOnAlarmTriggedListener;
 import com.bairock.iot.hamaser.communication.MyOnCtrlModelChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnCurrentValueChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnGearChangedListener;
@@ -15,6 +16,7 @@ import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.DevStateHelper;
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.Gear;
+import com.bairock.iot.intelDev.device.alarm.DevAlarm;
 import com.bairock.iot.intelDev.device.devcollect.DevCollect;
 import com.bairock.iot.intelDev.user.DevGroup;
 
@@ -123,6 +125,8 @@ public class DevGroupDao {
 			DevCollect dc = (DevCollect)device;
 			dc.getCollectProperty().setOnCurrentValueChanged(new MyOnCurrentValueChangedListener());
 			dc.getCollectProperty().setOnValueTriggedListener(new MyOnValueTriggedListener());
+		}else if(device instanceof DevAlarm) {
+			((DevAlarm)device).setOnAlarmTriggedListener(new MyOnAlarmTriggedListener());
 		}
 	}
 }
