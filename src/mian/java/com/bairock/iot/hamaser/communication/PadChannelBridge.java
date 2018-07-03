@@ -222,9 +222,9 @@ public class PadChannelBridge {
 		DevGroup group = SessionHelper.getDevGroup(userName, groupName);
 		if (null != group) {
 			String coding = cutMsg.substring(0, index);
-			if(coding.contains("_")) {
-				coding = coding.substring(0, coding.indexOf("_"));
-			}
+//			if(coding.contains("_")) {
+//				coding = coding.substring(0, coding.indexOf("_"));
+//			}
 			Device dev = group.findDeviceWithCoding(coding);
 			if(null == dev) {
 				return;
@@ -233,17 +233,18 @@ public class PadChannelBridge {
 			String state = cutMsg.substring(index + 1);
 			if (state.startsWith("b")) {
 				// gear
-				if(!(dev instanceof DevSwitch)) {
-					//only switch have gear
-					return;
-				}
-				String devSubCode = cutMsg.substring(cutMsg.lastIndexOf("_") + 1, index);
+//				if(!(dev instanceof DevSwitch)) {
+//					//only switch have gear
+//					return;
+//				}
+				//String devSubCode = cutMsg.substring(cutMsg.lastIndexOf("_") + 1, index);
 				String stateHead = cutMsg.substring(index + 2);
-				Device subDev = ((DevSwitch)dev).getSubDevBySc(devSubCode);
-				if(null == subDev) {
-					return;
-				}
-				subDev.setGear(Enum.valueOf(Gear.class, stateHead));
+//				Device subDev = ((DevSwitch)dev).getSubDevBySc(devSubCode);
+//				if(null == subDev) {
+//					return;
+//				}
+				
+				dev.setGear(Enum.valueOf(Gear.class, stateHead));
 				//sendDeviceGear(subDev, userName, groupName);
 			} else if (state.startsWith("2")) {
 				// 
