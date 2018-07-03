@@ -123,10 +123,10 @@ public class DevGroupDao {
 		}
 		if(device instanceof DevCollect) {
 			DevCollect dc = (DevCollect)device;
-			dc.getCollectProperty().setOnCurrentValueChanged(new MyOnCurrentValueChangedListener());
+			dc.getCollectProperty().addOnCurrentValueChangedListener(new MyOnCurrentValueChangedListener());
 			dc.getCollectProperty().setOnValueTriggedListener(new MyOnValueTriggedListener());
 		}else if(device instanceof DevAlarm) {
-			((DevAlarm)device).setOnAlarmTriggedListener(new MyOnAlarmTriggedListener());
+			((DevAlarm)device).addOnAlarmTriggedListener(new MyOnAlarmTriggedListener());
 		}
 	}
 }

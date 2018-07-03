@@ -1,6 +1,5 @@
 package com.bairock.iot.hamaser.communication;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -164,7 +163,7 @@ public class UpDownloadHandler extends ChannelInboundHandlerAdapter{
 			}else {
 				return null;
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
