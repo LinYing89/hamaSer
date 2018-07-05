@@ -1,11 +1,16 @@
 package com.bairock.iot.hamaser.communication;
 
+import javax.persistence.EntityManager;
+
 import org.apache.log4j.Logger;
 
 import com.bairock.iot.hamaser.dao.DevGroupDao;
+import com.bairock.iot.hamaser.dao.DeviceDao;
 import com.bairock.iot.hamaser.dao.UserDao;
 import com.bairock.iot.hamaser.listener.SessionHelper;
+import com.bairock.iot.hamaser.listener.StartUpListener;
 import com.bairock.iot.intelDev.communication.DevChannelBridge;
+import com.bairock.iot.intelDev.communication.DevChannelBridgeHelper;
 import com.bairock.iot.intelDev.communication.MessageAnalysiser;
 import com.bairock.iot.intelDev.device.CtrlModel;
 import com.bairock.iot.intelDev.device.DevHaveChild;
@@ -20,18 +25,21 @@ public class MyDevChannelBridge extends DevChannelBridge {
 	private int unrecognizableCount = 0;
 	StringBuilder sb = new StringBuilder();
 
+	EntityManager eManager;
+
 	private String userName;
 	private String groupName;
-	private Logger logger = Logger.getLogger(this.getClass().getName()); 
-	
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+
 	public MyDevChannelBridge() {
+		eManager = StartUpListener.getEntityManager();
 		setOnCommunicationListener(new OnCommunicationListener() {
-			
+
 			@Override
 			public void onSend(DevChannelBridge bridge, String msg) {
 				logger.info("send:" + msg);
 			}
-			
+
 			@Override
 			public void onReceived(DevChannelBridge bridge, String msg) {
 				logger.info("received:" + msg);
@@ -40,8 +48,26 @@ public class MyDevChannelBridge extends DevChannelBridge {
 	}
 
 	@Override
+	public void close() {
+		if(null != getDevice()) {
+			updateDeviceDb();
+			setDevice(null);
+		}
+		if(eManager.isOpen()) {
+			eManager.close();
+		}
+		super.close();
+	}
+	
+	public void updateDeviceDb() {
+		if (null != eManager && null != getDevice()) {
+			new DeviceDao().update(eManager, getDevice());
+		}
+	}
+
+	@Override
 	public void channelReceived(String msg, User user) {
-		//logger.info(msg);
+		// logger.info(msg);
 		if (null != getOnCommunicationListener()) {
 			getOnCommunicationListener().onReceived(this, msg);
 		}
@@ -81,12 +107,12 @@ public class MyDevChannelBridge extends DevChannelBridge {
 			return;
 		}
 		String[] codingState = MessageAnalysiser.findCodingState(msg);
-		
+
 		String coding = codingState[0];
 		String state = codingState[1];
-		
+
 		if (null == getDevice()) {
-			//尝试获取用户名、组名
+			// 尝试获取用户名、组名
 			String[] msgs = codingState[1].split(":");
 			String userName = null;
 			String groupName = null;
@@ -95,20 +121,21 @@ public class MyDevChannelBridge extends DevChannelBridge {
 					userName = str.substring(1);
 				} else if (str.startsWith("g")) {
 					groupName = str.substring(1);
-				} 
+				}
 			}
-			
+
 			if (null != coding && null != userName && null != groupName) {
 				UserDao userDao = new UserDao();
-				Device dev = userDao.findDeviceByUserNameGroupNameDevCoding2(userName, groupName, coding);
+				Device dev = userDao.findDevByUserNameGroupNameDevCodingUseEManager(eManager, userName, groupName,
+						coding);
 				if (null == dev) {
 					unrecognizableCount++;
 					if (unrecognizableCount >= 2) {
 						unrecognizableCount = 0;
-//						String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
-//						order = OrderHelper.getOrderMsg(order);
-//						sendOrder(order);
-//						System.out.println("MyDevChannelBridge set to local" + order);
+						// String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
+						// order = OrderHelper.getOrderMsg(order);
+						// sendOrder(order);
+						// System.out.println("MyDevChannelBridge set to local" + order);
 					}
 					return;
 				}
@@ -140,10 +167,10 @@ public class MyDevChannelBridge extends DevChannelBridge {
 				unrecognizableCount++;
 				if (unrecognizableCount >= 2) {
 					unrecognizableCount = 0;
-//					String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
-//					order = OrderHelper.getOrderMsg(order);
-//					sendOrder(order);
-//					System.out.println("MyDevChannelBridge set to local" + order);
+					// String order = OrderHelper.SET_HEAD + coding + OrderHelper.SEPARATOR + "a3";
+					// order = OrderHelper.getOrderMsg(order);
+					// sendOrder(order);
+					// System.out.println("MyDevChannelBridge set to local" + order);
 					return;
 				}
 			}
@@ -189,5 +216,19 @@ public class MyDevChannelBridge extends DevChannelBridge {
 			dev.setCtrlModel(CtrlModel.REMOTE);
 		}
 		dev.handle(state);
+	}
+	
+	public static MyDevChannelBridge findBridge(Device device) {
+//		if(null == device || null == device.findSuperParent().getDevGroup() || null == device.findSuperParent().getDevGroup().getUser()) {
+//			return null;
+//		}
+		Device rootDev = device.findSuperParent();
+		String groupName = rootDev.getDevGroup().getName();
+		String userName = rootDev.getDevGroup().getUser().getName();
+		DevChannelBridge d = DevChannelBridgeHelper.getIns().getDevChannelBridge(rootDev.getCoding(), userName, groupName);
+		if(null != d) {
+			return (MyDevChannelBridge)d;
+		}
+		return null;
 	}
 }

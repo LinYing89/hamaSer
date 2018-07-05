@@ -47,6 +47,7 @@
 		<class>com.bairock.iot.intelDev.device.devswitch.DevSwitchXRoad</class>
 		<class>com.bairock.iot.intelDev.device.alarm.DevAlarm</class>
 		<class>com.bairock.iot.intelDev.device.alarm.AlarmTrigger</class>
+		<class>com.bairock.iot.intelDev.device.alarm.AlarmInfo</class>
 		
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

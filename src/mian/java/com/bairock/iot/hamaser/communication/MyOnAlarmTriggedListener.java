@@ -8,9 +8,12 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+import com.bairock.iot.intelDev.device.CtrlModel;
+import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.alarm.AlarmTrigger;
 import com.bairock.iot.intelDev.device.alarm.DevAlarm;
 import com.bairock.iot.intelDev.user.DevGroup;
+import com.bairock.iot.intelDev.user.IntelDevHelper;
 import com.tencent.xinge.ClickAction;
 import com.tencent.xinge.Message;
 import com.tencent.xinge.Style;
@@ -20,8 +23,17 @@ public class MyOnAlarmTriggedListener implements DevAlarm.OnAlarmTriggedListener
 
 	@Override
 	public void onAlarmTrigged(AlarmTrigger trigger) {
-		pushToTag(trigger, Message.TYPE_NOTIFICATION, 0);
-		pushToTag(trigger, Message.TYPE_MESSAGE, 1);
+		Device dev = trigger.getDevAlarm();
+		dev.addAlarmInfo(IntelDevHelper.createAlarmInfo(dev.getName() + ":" + trigger.getMessage()));
+		
+		//设备为远程模式才向终端发通知，否则终端本地能自己判断有没有触发
+		if(trigger.getDevAlarm().getCtrlModel() == CtrlModel.REMOTE) {
+			//更新数据库
+			//MyDevChannelBridge.findBridge(dev).updateDeviceDb();
+			
+			pushToTag(trigger, Message.TYPE_NOTIFICATION, 0);
+			pushToTag(trigger, Message.TYPE_MESSAGE, 1);
+		}
 	}
 	
 	@Override
@@ -31,7 +43,15 @@ public class MyOnAlarmTriggedListener implements DevAlarm.OnAlarmTriggedListener
 
 	@Override
 	public void onAlarmTriggedRelieve(AlarmTrigger trigger) {
-		pushToTag(trigger, Message.TYPE_MESSAGE, 2);
+		Device dev = trigger.getDevAlarm();
+		dev.addAlarmInfo(IntelDevHelper.createAlarmInfo(dev.getName() + ":报警解除"));
+		
+		if(trigger.getDevAlarm().getCtrlModel() == CtrlModel.REMOTE) {
+			//更新数据库
+			//MyDevChannelBridge.findBridge(dev).updateDeviceDb();
+			
+			pushToTag(trigger, Message.TYPE_MESSAGE, 2);
+		}
 	}
 	
 	/**

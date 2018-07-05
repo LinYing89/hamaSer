@@ -19,6 +19,7 @@ import com.bairock.iot.hamaser.communication.PadServer;
 import com.bairock.iot.hamaser.communication.UpDownloadServer;
 import com.bairock.iot.intelDev.communication.DevChannelBridgeHelper;
 import com.bairock.iot.intelDev.communication.DevServer;
+import com.bairock.iot.intelDev.communication.RefreshCollectorValueHelper;
 import com.bairock.iot.intelDev.user.IntelDevHelper;
 import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
@@ -35,6 +36,8 @@ public class StartUpListener implements ServletContextListener {
 
 	public void contextDestroyed(ServletContextEvent sce) {
 		logger.info("contextDestroyed");
+		DevChannelBridgeHelper.getIns().closeAllBridge();
+		
 		for (HttpSession s : SessionHelper.LIST_SESSION) {
 			EntityManager em = (EntityManager) s.getAttribute(SessionHelper.ENTITY_MANAGER);
 			if (null != em) {
@@ -45,6 +48,7 @@ public class StartUpListener implements ServletContextListener {
 		AbandonedConnectionCleanupThread.checkedShutdown();
 		DevChannelBridgeHelper.getIns().stopSeekDeviceOnLineThread();
 		IntelDevHelper.shutDown();
+		RefreshCollectorValueHelper.getIns().isStoped = true;
 		upDownloadServer.close();
 		padServer.close();
 		devServer.close();

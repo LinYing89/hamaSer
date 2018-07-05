@@ -323,6 +323,41 @@ public class UserDao {
 		return device;
 	}
 	
+	public Device findDevByUserNameGroupNameDevCodingUseEManager(EntityManager eManager2, String userName, String groupName, String devCoding) {
+		Device device = null;
+		try {
+			eManager2.getTransaction().begin();
+
+			TypedQuery<User> query = eManager2.createQuery("from User as u where u.name=:name",
+					User.class);
+			query.setParameter("name", userName);
+			User user1 = query.getSingleResult();
+			Device devInDb = null;
+			if(null != user1) {
+				for(DevGroup group : user1.getListDevGroup()){
+					if(group.getName().equals(groupName)) {
+						for(Device dev : group.getListDevice()) {
+							if(dev.getCoding().equals(devCoding)) {
+								initDevice(dev);
+								devInDb = dev;
+								break;
+							}
+						}
+						break;
+					}
+				}
+				//initGroup(myGroup);
+			}
+			eManager2.getTransaction().commit();
+			device = devInDb;
+		} catch (Exception e) {
+			eManager2.getTransaction().rollback();
+			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "groupName:" + groupName + "devCoding:" + devCoding);
+		}
+		return device;
+	}
+	
 	private void initGroup(DevGroup group) {
 		if(null == group) {
 			return;
