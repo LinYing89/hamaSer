@@ -24,9 +24,27 @@ public class MyDevChannelBridge extends DevChannelBridge {
 	private String groupName;
 	private Logger logger = Logger.getLogger(this.getClass().getName()); 
 	
+	public MyDevChannelBridge() {
+		setOnCommunicationListener(new OnCommunicationListener() {
+			
+			@Override
+			public void onSend(DevChannelBridge bridge, String msg) {
+				logger.info("send:" + msg);
+			}
+			
+			@Override
+			public void onReceived(DevChannelBridge bridge, String msg) {
+				logger.info("received:" + msg);
+			}
+		});
+	}
+
 	@Override
 	public void channelReceived(String msg, User user) {
-		logger.info(msg);
+		//logger.info(msg);
+		if (null != getOnCommunicationListener()) {
+			getOnCommunicationListener().onReceived(this, msg);
+		}
 		sb.append(msg);
 		if (judgeMsgFormate(sb.toString())) {
 			analysisReceiveMessage(msg);
