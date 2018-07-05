@@ -5,12 +5,22 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.apache.log4j.Logger;
+
 import com.bairock.iot.hamaser.listener.SessionHelper;
 import com.bairock.iot.hamaser.listener.StartUpListener;
 import com.bairock.iot.intelDev.device.Device;
 
 public class DeviceDao {
 
+	private Logger logger = Logger.getLogger(this.getClass().getName()); 
+	
+	/**
+	 * 获取具有相同编码的设备
+	 * @param mainCodeId 主编码id
+	 * @param subCode 次编码
+	 * @return
+	 */
 	public Device findByMainCodeIdAndSubCode(String mainCodeId, String subCode) {
 		Device device = null;
 		EntityManager eManager2 = StartUpListener.getEntityManager();
@@ -30,6 +40,7 @@ public class DeviceDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.info(e.getMessage() + " 说明:mainCodeId:" + mainCodeId + " sunCode:" + subCode);
 		} finally {
 			eManager2.close();
 		}
@@ -47,6 +58,7 @@ public class DeviceDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.info(e.getMessage() + " 说明:device:" + device);
 		}
 		return res;
 	}

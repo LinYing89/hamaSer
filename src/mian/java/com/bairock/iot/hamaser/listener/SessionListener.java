@@ -12,13 +12,11 @@ public class SessionListener implements HttpSessionListener {
 
     public void sessionDestroyed(HttpSessionEvent se)  { 
     	//close EntityManager when the last user session is destroyed
-    	System.out.println("SessionListener sessionDestroyed");
     	String userName = (String) se.getSession().getAttribute(SessionHelper.USER_NAME);
     	if(SessionHelper.getUserSession(userName).size() <= 1) {
     		EntityManager em = (EntityManager) se.getSession().getAttribute(SessionHelper.ENTITY_MANAGER);
     		if(null != em) {
     			em.close();
-    			System.out.println("SessionListener em is closed");
     		}
     	}
     	

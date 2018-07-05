@@ -24,7 +24,6 @@ public class ChangeGroupServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String groupName = request.getParameter(SessionHelper.DEV_GROUP_NAME);
-		System.out.println("ChangeGroupServlet groupName " + groupName);
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		User manager = (User)request.getSession().getAttribute(SessionHelper.USER);

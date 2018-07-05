@@ -3,6 +3,8 @@ package com.bairock.iot.hamaser.dao;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.apache.log4j.Logger;
+
 import com.bairock.iot.hamaser.communication.MyOnAlarmTriggedListener;
 import com.bairock.iot.hamaser.communication.MyOnCtrlModelChangedListener;
 import com.bairock.iot.hamaser.communication.MyOnCurrentValueChangedListener;
@@ -22,6 +24,14 @@ import com.bairock.iot.intelDev.user.DevGroup;
 
 public class DevGroupDao {
 
+	private Logger logger = Logger.getLogger(this.getClass().getName()); 
+	
+	/**
+	 * 获取组对象
+	 * @param id user id
+	 * @param groupName 组名
+	 * @return
+	 */
 	public DevGroup findByUserIdAndGroupName(long id, String groupName) {
 		DevGroup group = null;
 		EntityManager eManager2 = StartUpListener.getEntityManager();
@@ -37,12 +47,18 @@ public class DevGroupDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userId:" + id + "groupName:" + groupName);
 		} finally {
 			eManager2.close();
 		}
 		return group;
 	}
 
+	/**
+	 * 添加组对象
+	 * @param devGroup
+	 * @return
+	 */
 	public boolean add(DevGroup devGroup) {
 		boolean res = false;
 		EntityManager eManager = SessionHelper.getEntityManager(devGroup.getUser().getName());
@@ -67,10 +83,21 @@ public class DevGroupDao {
 		} catch (Exception e) {
 			eManager.getTransaction().rollback();
 			e.printStackTrace();
+			String userName = "";
+			if(null != devGroup.getUser()) {
+				userName = devGroup.getUser().getName();
+			}
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "groupName:" + devGroup.getName());
 		}
 		return res;
 	}
 
+	/**
+	 * 删除组对象
+	 * @param userName
+	 * @param devGroup
+	 * @return
+	 */
 	public boolean delete(String userName, DevGroup devGroup) {
 		boolean res = false;
 		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
@@ -82,11 +109,23 @@ public class DevGroupDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "groupName:" + devGroup.getName());
 		}
 		return res;
 	}
 
+	/**
+	 * 更新组对象
+	 * @param devGroup
+	 * @return
+	 */
 	public boolean update(DevGroup devGroup) {
+		String userName = "";
+		if(null != devGroup.getUser()) {
+			userName = devGroup.getUser().getName();
+		}
+		logger.error("update group 说明:userName:" + userName + "groupName:" + devGroup.getName());
+		
 		boolean res = false;
 		EntityManager eManager2 = SessionHelper.getEntityManager(devGroup.getUser().getName());
 		try {
@@ -97,6 +136,7 @@ public class DevGroupDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "groupName:" + devGroup.getName());
 		}
 		return res;
 	}
@@ -125,6 +165,7 @@ public class DevGroupDao {
 			DevCollect dc = (DevCollect)device;
 			dc.getCollectProperty().addOnCurrentValueChangedListener(new MyOnCurrentValueChangedListener());
 			dc.getCollectProperty().setOnValueTriggedListener(new MyOnValueTriggedListener());
+			dc.getCollectProperty().initTriggerListener();
 		}else if(device instanceof DevAlarm) {
 			((DevAlarm)device).addOnAlarmTriggedListener(new MyOnAlarmTriggedListener());
 		}

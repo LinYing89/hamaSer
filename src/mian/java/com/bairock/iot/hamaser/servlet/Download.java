@@ -42,10 +42,7 @@ public class Download extends HttpServlet {
 		String appPath = StartUpListener.getAppPath(debug) + File.separator + appName;
 		System.out.println("appPath" + appPath);
 		try {
-			// 构建输入流
 			InputStream in = new FileInputStream(appPath);
-			// 下载
-			// 通知客户端以下载的方式打开
 			response.setContentType("application/x-download");
 			// response.setContentType("application/force-download");
 			// response.setContentType("application/x-msdownload");

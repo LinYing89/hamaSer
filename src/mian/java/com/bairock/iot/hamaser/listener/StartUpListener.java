@@ -10,6 +10,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.bairock.iot.hamaser.communication.MyDevChannelBridge;
 import com.bairock.iot.hamaser.communication.MyOnPadDisconnectedListener;
 import com.bairock.iot.hamaser.communication.PadChannelBridgeHelper;
@@ -29,8 +31,10 @@ public class StartUpListener implements ServletContextListener {
 	private UpDownloadServer upDownloadServer;
 	private PadServer padServer;
 	private DevServer devServer;
+	private Logger logger = Logger.getLogger(this.getClass().getName()); 
 
 	public void contextDestroyed(ServletContextEvent sce) {
+		logger.info("contextDestroyed");
 		for (HttpSession s : SessionHelper.LIST_SESSION) {
 			EntityManager em = (EntityManager) s.getAttribute(SessionHelper.ENTITY_MANAGER);
 			if (null != em) {
@@ -47,6 +51,7 @@ public class StartUpListener implements ServletContextListener {
 	}
 
 	public void contextInitialized(ServletContextEvent sce) {
+		logger.info("contextInitialized");
 		em = Persistence.createEntityManagerFactory("intelDev");
 		DevChannelBridgeHelper.DEV_CHANNELBRIDGE_NAME = MyDevChannelBridge.class.getName();
 
@@ -59,7 +64,7 @@ public class StartUpListener implements ServletContextListener {
 			UpDownloadServer.PORT = Integer.parseInt(properties.get("upDownloadPort").toString());
 			DOWNLOAD_RELEASE_PATH = properties.get("downloadReleasePath").toString();
 			DOWNLOAD_DEBUG_PATH = properties.get("downloadDebugPath").toString();
-			System.out.println("padPort:" + PadServer.PORT + " devPort:" + DevServer.PORT + " loadPort:" + UpDownloadServer.PORT);
+			logger.info("padPort:" + PadServer.PORT + " devPort:" + DevServer.PORT + " loadPort:" + UpDownloadServer.PORT);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

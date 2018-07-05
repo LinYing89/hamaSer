@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.apache.log4j.Logger;
+
 import com.bairock.iot.hamaser.listener.SessionHelper;
 import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.Device;
@@ -29,6 +31,8 @@ import com.bairock.iot.intelDev.user.User;
  */
 public class UserDao {
 
+	private Logger logger = Logger.getLogger(this.getClass().getName()); 
+	
 	/**
 	 * 是否有此用户名
 	 * 
@@ -62,6 +66,7 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "psd:" + psd);
 		}
 		return res;
 	}
@@ -81,6 +86,7 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName);
 		}
 		return res;
 	}
@@ -107,9 +113,9 @@ public class UserDao {
 			user.getListDevGroup();
 			eManager2.getTransaction().commit();
 		} catch (Exception e) {
-			System.out.println("UserDao name is:" + name + " psd is:" + psd);
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + name + "psd:" + psd);
 		}
 		return user;
 	}
@@ -136,6 +142,7 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "devGroupName:" + devGroupName + "devGroupPsd:" + devGroupPsd);
 		}
 		return res;
 	}
@@ -156,6 +163,7 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName);
 		}
 		return res;
 	}
@@ -179,6 +187,7 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName);
 		}
 		return res;
 	}
@@ -194,6 +203,7 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			res = false;
+			logger.error(e.getMessage() + " 说明:userName:" + user.getName());
 		}
 		return res;
 	}
@@ -223,6 +233,7 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "groupName:" + groupName);
 		}
 		return user;
 	}
@@ -270,6 +281,44 @@ public class UserDao {
 		} catch (Exception e) {
 			eManager2.getTransaction().rollback();
 			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "groupName:" + groupName + "devCoding:" + devCoding);
+		}
+		return device;
+	}
+	
+	
+	public Device findDeviceByUserNameGroupNameDevCoding2(String userName, String groupName, String devCoding) {
+		Device device = null;
+		EntityManager eManager2 = SessionHelper.getEntityManager(userName);
+		try {
+			eManager2.getTransaction().begin();
+
+			TypedQuery<User> query = eManager2.createQuery("from User as u where u.name=:name",
+					User.class);
+			query.setParameter("name", userName);
+			User user1 = query.getSingleResult();
+			Device devInDb = null;
+			if(null != user1) {
+				for(DevGroup group : user1.getListDevGroup()){
+					if(group.getName().equals(groupName)) {
+						for(Device dev : group.getListDevice()) {
+							if(dev.getCoding().equals(devCoding)) {
+								initDevice(dev);
+								devInDb = dev;
+								break;
+							}
+						}
+						break;
+					}
+				}
+				//initGroup(myGroup);
+			}
+			eManager2.getTransaction().commit();
+			device = devInDb;
+		} catch (Exception e) {
+			eManager2.getTransaction().rollback();
+			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "groupName:" + groupName + "devCoding:" + devCoding);
 		}
 		return device;
 	}

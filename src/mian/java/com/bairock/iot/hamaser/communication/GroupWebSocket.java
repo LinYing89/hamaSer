@@ -13,6 +13,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.apache.log4j.Logger;
+
 import com.bairock.iot.intelDev.communication.DevChannelBridge;
 import com.bairock.iot.intelDev.communication.DevChannelBridgeHelper;
 import com.bairock.iot.intelDev.device.DevHaveChild;
@@ -32,8 +34,6 @@ public class GroupWebSocket {
 	private Session session;
 	private String userName = "";
 	private String groupName = "";
-	// private boolean onLine = false;
-	// private boolean first = true;
 
 	public String getUserName() {
 		return userName;
@@ -82,6 +82,8 @@ public class GroupWebSocket {
 	public void sendMessage(String message) {
 		if (null != session) {
 			try {
+				Logger logger = Logger.getLogger(this.getClass().getName());
+				logger.info(message);
 				session.getBasicRemote().sendText(message);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -180,7 +182,6 @@ public class GroupWebSocket {
 			map.put("devCoding", dev.getLongCoding());
 			map.put("state", dev.getDevState());
 			String json = mapper.writeValueAsString(map);
-			System.out.println("GroupWebSocket " + json);
 			if (null != json) {
 				sendMessage(json);
 			}
@@ -190,7 +191,6 @@ public class GroupWebSocket {
 			map.put("devCoding", dev.getLongCoding());
 			map.put("ctrlModel", dev.getCtrlModel().toString());
 			json = mapper.writeValueAsString(map);
-			System.out.println("GroupWebSocket " + json);
 			if (null != json) {
 				sendMessage(json);
 			}
@@ -203,9 +203,9 @@ public class GroupWebSocket {
 				if (dc.getCollectProperty().getCollectSrc() == CollectSignalSource.SWITCH) {
 					if (dc.getCollectProperty().getCurrentValue() != null) {
 						if (dc.getCollectProperty().getCurrentValue() == 1) {
-							map.put("currentValue", "¿ª");
+							map.put("currentValue", "å…³");
 						} else {
-							map.put("currentValue", "¹Ø");
+							map.put("currentValue", "å¼€");
 						}
 					}
 				} else {
@@ -231,14 +231,4 @@ public class GroupWebSocket {
 		}
 
 	}
-	// public void isOnLine() {
-	// boolean isOnLine = true;
-	// if(first) {
-	// first = false;
-	// }else {
-	// isOnLine = onLine;
-	// }
-	// onLine = false;
-	// //for(MsgC)
-	// }
 }

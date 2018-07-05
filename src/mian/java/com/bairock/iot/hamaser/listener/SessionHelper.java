@@ -22,8 +22,8 @@ public class SessionHelper {
 	public static List<HttpSession> LIST_SESSION = new ArrayList<HttpSession>();
 	
 	/**
-	 * 鑾峰彇鐢ㄦ埛
-	 * @param name 鐢ㄦ埛鍚�
+	 * 从session中获取用户对象
+	 * @param name 用户名
 	 * @return
 	 */
 	public static User getUser(String name){
@@ -60,9 +60,9 @@ public class SessionHelper {
 	}
 	
 	/**
-	 * 鑾峰彇缁�
-	 * @param userName 鐢ㄦ埛鍚嶇О
-	 * @param groupName 缁勫悕
+	 * 从session获取组对象
+	 * @param userName 用户名
+	 * @param groupName 组名
 	 * @return
 	 */
 	public static DevGroup getDevGroup(String userName, String groupName){
@@ -81,10 +81,10 @@ public class SessionHelper {
 	}
 	
 	/**
-	 * 鑾峰彇鐢ㄦ埛鐨勬寚瀹氳澶�
-	 * @param devCoding 璁惧缂栫爜
-	 * @param userName
-	 * @param devGroupName
+	 * 从session中获取设备对象
+	 * @param devCoding 设备编码
+	 * @param userName 用户名
+	 * @param devGroupName 组名
 	 * @return
 	 */
 	public static Device getDevice(String devCoding, String userName, String devGroupName){
@@ -100,11 +100,10 @@ public class SessionHelper {
 	}
 	
 	/**
-	 * 缁勭殑session涓彧淇濆瓨缁�(group)鍜岀敤鎴峰憳鍚�(userName)
-	 * 鐢ㄦ埛鐨剆ession涓繚瀛樼敤鎴�(user)锛岀粍(group)鍜岀敤鎴峰悕(userName)
-	 * @param userName
-	 * @param groupname
-	 * @param groupPsd
+	 * 获取用户session
+	 * @param userName 用户名
+	 * @param groupname 组名
+	 * @param groupPsd 组密码
 	 * @return
 	 */
 	public static List<HttpSession> getMySession(String userName, String groupname){

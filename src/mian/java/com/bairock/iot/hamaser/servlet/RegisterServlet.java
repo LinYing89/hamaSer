@@ -39,7 +39,7 @@ public class RegisterServlet extends HttpServlet {
 		try {
 			UserDao ud = new UserDao();
 			if (ud.isHaveByUserName(name)) {
-				registerFail("Ãû³ÆÖØ¸´", formbean, request, response);
+				registerFail("ç”¨æˆ·åå·²å­˜åœ¨", formbean, request, response);
 //				formbean.getErrors().put("name", "ç”¨æˆ·åå·²å­˜åœ¨");
 //				request.setAttribute("formbean", formbean);
 //				request.getRequestDispatcher("/register.jsp").forward(request, response);
@@ -52,17 +52,17 @@ public class RegisterServlet extends HttpServlet {
 			user.setRegisterTime(new Date());
 			boolean res = ud.add(user);
 			if (res) {
-				String message = String.format("×¢²á³É¹¦,3Ãëºó×Ô¶¯Ìø×ªµ½µÇÂ¼Ò³Ãæ<meta http-equiv='refresh' content='3;url=%s'/>",
+				String message = String.format("æ³¨å†ŒæˆåŠŸï¼Œ3ç§’åè·³è½¬åˆ°ç™»å½•é¡µé¢<meta http-equiv='refresh' content='3;url=%s'/>",
 						request.getContextPath() + "/login.jsp");
 				request.setAttribute("message", message);
 				request.getRequestDispatcher("/message.jsp").forward(request, response);
 				// response.sendRedirect(request.getContextPath() + "/message.jsp");
 			} else {
-				registerFail("×¢²áÊ§°Ü", formbean, request, response);
+				registerFail("æ³¨å†Œå¤±è´¥", formbean, request, response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			registerFail("×¢²áÊ§°Ü", formbean, request, response);
+			registerFail("æ³¨å†Œå¤±è´¥", formbean, request, response);
 			// formbean.getErrors().put("name", "æ³¨å†Œå¤±è´¥");
 			// request.setAttribute("formbean", formbean);
 			// request.getRequestDispatcher("/register.jsp").forward(request, response);

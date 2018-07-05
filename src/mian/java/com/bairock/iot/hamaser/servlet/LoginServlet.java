@@ -26,19 +26,11 @@ public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static final String KEY = ":cookie@lygzb.com";
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doPost(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
@@ -113,25 +105,20 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	/**
-	 * MD5鍔犲瘑绠楁硶
+	 * MD5
 	 * 
 	 * @param ss
 	 * @return
 	 */
 	public static String calcMD5(String ss) {
 		String s = ss == null ? "" : ss;
-		// 瀛楀吀
 		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		try {
 			byte[] strTemp = s.getBytes();
-			// 鑾峰彇MD5
 			MessageDigest mdTemp = MessageDigest.getInstance("MD5");
-			// 鏇存柊鏁版嵁
 			mdTemp.update(strTemp);
-			// 鍔犲瘑
 			byte[] md = mdTemp.digest();
 			int j = md.length;
-			// 鏂板瓧绗︿覆鏁扮粍
 			char str[] = new char[j * 2];
 			int k = 0;
 			for (int i = 0; i < j; i++) {

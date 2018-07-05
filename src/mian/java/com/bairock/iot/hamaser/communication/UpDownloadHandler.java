@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.bairock.iot.hamaser.dao.DevGroupDao;
 import com.bairock.iot.hamaser.dao.UserDao;
 import com.bairock.iot.hamaser.listener.SessionHelper;
@@ -25,6 +27,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public class UpDownloadHandler extends ChannelInboundHandlerAdapter{
 	
 	private StringBuilder sbReadJson;
+	private Logger logger = Logger.getLogger(this.getClass().getName()); 
+	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		super.channelActive(ctx);
@@ -37,6 +41,7 @@ public class UpDownloadHandler extends ChannelInboundHandlerAdapter{
 			byte[] req = new byte[m.readableBytes()];
 			m.readBytes(req);
 			String str = new String(req, "GBK");
+			logger.info(str);
 			if(str.equals("upload")) {
 				sbReadJson = new StringBuilder();
 			}else if(str.startsWith("download")) {
@@ -66,7 +71,6 @@ public class UpDownloadHandler extends ChannelInboundHandlerAdapter{
 				
 				
 			}else {
-				System.out.println("UpDownloadHandler " + str);
 				sbReadJson.append(str);
 				//upload end
 				if(str.endsWith("#")) {

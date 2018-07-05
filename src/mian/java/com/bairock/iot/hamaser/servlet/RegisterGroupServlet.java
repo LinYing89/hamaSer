@@ -23,7 +23,6 @@ public class RegisterGroupServlet extends HttpServlet {
 		User manager = (User) request.getSession().getAttribute(SessionHelper.USER);
 		String groupName = request.getParameter("groupName");
 		String petName = request.getParameter("petName");
-		System.out.println("RegisterGroupServlet petName: " + petName);
 		String groupPsd = request.getParameter("groupPsd");
 		String groupConfirmPsd = request.getParameter("groupConfirmPsd");
 		formbean.setGroupName(groupName);

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.bairock.iot.intelDev.device.alarm.AlarmTrigger;
@@ -20,11 +21,12 @@ public class MyOnAlarmTriggedListener implements DevAlarm.OnAlarmTriggedListener
 	@Override
 	public void onAlarmTrigged(AlarmTrigger trigger) {
 		pushToTag(trigger, Message.TYPE_NOTIFICATION, 0);
+		pushToTag(trigger, Message.TYPE_MESSAGE, 1);
 	}
 	
 	@Override
 	public void onAlarmTrigging(AlarmTrigger trigger) {
-		pushToTag(trigger, Message.TYPE_MESSAGE, 1);
+		//pushToTag(trigger, Message.TYPE_MESSAGE, 1);
 	}
 
 	@Override
@@ -48,7 +50,8 @@ public class MyOnAlarmTriggedListener implements DevAlarm.OnAlarmTriggedListener
 		
 		XingeApp xinge = new XingeApp(2100297444, "b328d1fa35307949d7809b6453f3ac8c");
         JSONObject ret = xinge.pushTags(0, listTag, "OR", message1);
-        System.out.println("MyOnAlarmTriggedListener " + ret);
+        Logger logger = Logger.getLogger(this.getClass().getName()); 
+        logger.info(ret);
 	}
 	
 	private Message createMessage(AlarmTrigger trigger, int messageType, int triggerStyle) {

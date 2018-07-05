@@ -29,17 +29,6 @@ public class GroupWebSocketHelper {
 		return listMyGroup;
 	}
 	
-//	public static void refreshOnLine(String userName, String groupName) {
-//		try {
-//			List<GroupWebSocket> listMyGroup = getMyListGroupWebSocket(userName, groupName);
-//			for(GroupWebSocket gs : listMyGroup) {
-//				gs.isOnLine();
-//			}
-//		}catch(Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
 	public static void sendGroupMessage(String msg, GroupWebSocket groupWebSocket) {
 		if (null != groupWebSocket) {
 			groupWebSocket.sendMessage(msg);

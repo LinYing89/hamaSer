@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.bairock.iot.hamaser.dao.DevGroupDao;
 import com.bairock.iot.hamaser.dao.DeviceDao;
 import com.bairock.iot.hamaser.dao.UserDao;
@@ -34,8 +36,8 @@ public class PadChannelBridge {
 
 	private Channel channel;
 
-	private String userName;
-	private String groupName;
+	private String userName="";
+	private String groupName="";
 	private String channelId;
 	// the channel have no response count,0 if have response
 	private int noReponse;
@@ -43,6 +45,8 @@ public class PadChannelBridge {
 	private StringBuilder sbReceived = new StringBuilder();
 	
 	private OnPadConnectedListener onPadConnectedListener;
+	
+	private Logger logger = Logger.getLogger(this.getClass().getName()); 
 	
 	public String getUserName() {
 		return userName;
@@ -73,6 +77,7 @@ public class PadChannelBridge {
 	}
 
 	public void channelReceived(String msg) {
+		logger.info(" userName:" + userName + " groupName:" + groupName + " msg:" + msg);
 		noReponse = 0;
 		sbReceived.append(msg);
 		//System.out.println(sbReceived.length() + "?");
@@ -157,13 +162,11 @@ public class PadChannelBridge {
 				String coding = msg.substring(1, index);
 				String model = msg.substring(index + 2, index + 3);
 				String ip = msg.substring(index + 4, msg.indexOf("#"));
-				System.out.println("msg:" + msg);
-				System.out.println("ip:" + ip);
 				if(model.equals("1")) {
 					ObjectMapper mapper = new ObjectMapper();
 					try {
 						String json = ip.substring(ip.indexOf(":") + 1);
-						System.out.println("json:" + json);
+						logger.info(json);
 						User user = mapper.readValue(json, User.class);
 						Device device1 = user.getListDevGroup().get(0).getListDevice().get(0);
 						UserDao userDao = new UserDao();
@@ -196,9 +199,7 @@ public class PadChannelBridge {
 			String coding = cutMsg.substring(0, index - 1);
 			DevChannelBridgeHelper.getIns().sendDevOrder(coding, "$" + msg, this.userName, this.groupName, true);
 		}  else if (msg.startsWith("ogr")) {
-			// TODO
 		} else if (msg.startsWith("ogs")) {
-			// TODO
 		} else {
 			// like IB30006:707#5C
 			if (msg.startsWith("I")) {
@@ -211,9 +212,7 @@ public class PadChannelBridge {
 	}
 
 	private void analysisIMsg(String msg) {
-		System.out.println("PadChannelBridge analysisIMsg"+ " userName:" + userName + " groupName:" + groupName + " msg:" + msg);
 		if (!msg.contains("#") || !msg.contains(":")) {
-			System.out.println("PadChannelBridge unknow msg:" + msg);
 			return;
 		}
 		
@@ -222,9 +221,6 @@ public class PadChannelBridge {
 		DevGroup group = SessionHelper.getDevGroup(userName, groupName);
 		if (null != group) {
 			String coding = cutMsg.substring(0, index);
-//			if(coding.contains("_")) {
-//				coding = coding.substring(0, coding.indexOf("_"));
-//			}
 			Device dev = group.findDeviceWithCoding(coding);
 			if(null == dev) {
 				return;
@@ -233,31 +229,19 @@ public class PadChannelBridge {
 			String state = cutMsg.substring(index + 1);
 			if (state.startsWith("b")) {
 				// gear
-//				if(!(dev instanceof DevSwitch)) {
-//					//only switch have gear
-//					return;
-//				}
-				//String devSubCode = cutMsg.substring(cutMsg.lastIndexOf("_") + 1, index);
 				String stateHead = cutMsg.substring(index + 2);
-//				Device subDev = ((DevSwitch)dev).getSubDevBySc(devSubCode);
-//				if(null == subDev) {
-//					return;
-//				}
 				
 				dev.setGear(Enum.valueOf(Gear.class, stateHead));
-				//sendDeviceGear(subDev, userName, groupName);
 			} else if (state.startsWith("2")) {
 				// 
 				String s1 = state.substring(1,2);
                 if(s1.equals(DevStateHelper.getIns().getDs(DevStateHelper.DS_YI_CHANG))){
                     dev.setDevStateId(DevStateHelper.DS_YI_CHANG);
                 }
-				//sendNormalMessage("1", dev, userName, groupName, false);
 			} else {
 				// 
 				setDevCtrlModel(dev);
 				dev.handle(state);
-				//sendAffectMessage("1", dev, userName, groupName);
 			}
 		}
 	}
@@ -269,7 +253,6 @@ public class PadChannelBridge {
 		if (device.getCtrlModel() != CtrlModel.LOCAL) {
 			// 
 			device.setCtrlModel(CtrlModel.LOCAL);
-			//sendDeviceCtrlModel(device, userName, groupName);
 		}
 	}
 	
@@ -434,7 +417,7 @@ public class PadChannelBridge {
 	}
 
 	public void sendMessage(String msg) {
-		System.out.println("PadChannelBridge sendMessage"+ " userName:" + userName + " groupName:" + groupName + " msg:" + msg);
+		logger.info(" userName:" + userName + " groupName:" + groupName + " msg:" + msg);
 		if (noReponse > 2) {
 			channel.close();
 			PadChannelBridgeHelper.getIns().removeBridge(this);
@@ -445,7 +428,7 @@ public class PadChannelBridge {
 	}
 	
 	public void sendMessageNotReponse(String msg) {
-		System.out.println("PadChannelBridge sendMessageNotReponse "+ " userName:" + userName + " groupName:" + groupName + " msg:" + msg);
+		logger.info(" userName:" + userName + " groupName:" + groupName + " msg:" + msg);
 	    getChannel().writeAndFlush(Unpooled.copiedBuffer(msg.getBytes()));
 	}
 	

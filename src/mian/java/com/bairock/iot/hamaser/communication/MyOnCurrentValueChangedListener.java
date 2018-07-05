@@ -27,9 +27,9 @@ public class MyOnCurrentValueChangedListener implements CollectProperty.OnCurren
 			if(dev.getCollectProperty().getCollectSrc() == CollectSignalSource.SWITCH) {
 				if(dev.getCollectProperty().getCurrentValue() != null) {
                     if (dev.getCollectProperty().getCurrentValue() == 1) {
-                        map.put("currentValue", "¿ª");
+                        map.put("currentValue", "ï¿½ï¿½");
                     } else {
-                        map.put("currentValue", "¹Ø");
+                        map.put("currentValue", "ï¿½ï¿½");
                     }
                 }
 			}else {
