@@ -49,10 +49,10 @@ public class MyDevChannelBridge extends DevChannelBridge {
 
 	@Override
 	public void close() {
-		if(null != getDevice()) {
-			updateDeviceDb();
-			setDevice(null);
-		}
+//		if(null != getDevice()) {
+//			updateDeviceDb();
+//		}
+		setDevice(null);
 		if(eManager.isOpen()) {
 			eManager.close();
 		}

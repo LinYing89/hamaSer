@@ -24,7 +24,7 @@ public class MyOnValueTriggedListener implements CollectProperty.OnValueTriggedL
 	@Override
 	public void onValueTrigged(ValueTrigger trigger, float value) {
 		Device dev = trigger.getCollectProperty().getDevCollect();
-		dev.addAlarmInfo(IntelDevHelper.createAlarmInfo(dev.getName() + ":" + trigger.getMessage()
+		dev.addAlarmInfo(IntelDevHelper.createAlarmInfo(dev.getName(), trigger.getMessage()
 				+ " (当前值:" + value + ")"));
 		
 		if (dev.getCtrlModel() == CtrlModel.REMOTE) {
@@ -43,12 +43,12 @@ public class MyOnValueTriggedListener implements CollectProperty.OnValueTriggedL
 	@Override
 	public void onValueTriggedRelieve(ValueTrigger trigger, float value) {
 		Device dev = trigger.getCollectProperty().getDevCollect();
-		dev.addAlarmInfo(IntelDevHelper.createAlarmInfo(dev.getName() + ":" + "提醒解除"
+		dev.addAlarmInfo(IntelDevHelper.createAlarmInfo(dev.getName(), "提醒解除"
 		+ " (当前值:" + value + ")"));
 		
 		if (trigger.getCollectProperty().getDevCollect().getCtrlModel() == CtrlModel.REMOTE) {
 			//更新数据库
-			//MyDevChannelBridge.findBridge(dev).updateDeviceDb();
+			MyDevChannelBridge.findBridge(dev).updateDeviceDb();
 			
 			pushToTag(trigger, value, Message.TYPE_MESSAGE, 2);
 		}

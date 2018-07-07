@@ -15,7 +15,7 @@ public class SessionHelper {
 	public static final String USER = "user";
 	public static final String USER_NAME = "userName";
 	public static final String DEV_GROUP = "devGroup";
-	public static final String DEV_GROUP_NAME = "devGroupName";
+	public static final String DEV_GROUP_NAME = "groupName";
 	
 	public static final String ENTITY_MANAGER = "entityManager";
 	

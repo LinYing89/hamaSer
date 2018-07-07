@@ -105,11 +105,11 @@ if(null == ctrlable){
 			<c:forEach items="${listGroup}" var="group">
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown"
-						href="<%=path%>/ChangeGroupServlet?devGroupName=${group.name}">${group.name} ${group.petName}
+						href="<%=path%>/ChangeGroupServlet?groupName=${group.name}">${group.name} ${group.petName}
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="<%=path%>/ChangeGroupServlet?devGroupName=${group.name}">进入</a></li>
+						<li><a href="<%=path%>/ChangeGroupServlet?groupName=${group.name}">进入</a></li>
 						<li class="divider"></li>
 						<li><a class="a_ctrl" href="<%=path%>/page/editGroup.jsp?devGroupName=${group.name}">编辑</a></li>
 						<li><a class="a_ctrl" href="javascript:void(0)" onclick="deleteGroup('${group.name }')">删除</a></li>

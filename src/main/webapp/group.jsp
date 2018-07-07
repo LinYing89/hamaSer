@@ -11,10 +11,11 @@
 			+ path + "/";
 
 	String managerName = ((User) request.getSession().getAttribute(SessionHelper.USER)).getName();
-	DevGroup user = (DevGroup) request.getSession().getAttribute(SessionHelper.DEV_GROUP);
-	List<Device> listDev = user.findListIStateDev(true);
+	DevGroup group = (DevGroup) request.getSession().getAttribute(SessionHelper.DEV_GROUP);
+	String urlAlarm = path + "/FindGroupAlarmInfo?userName=" + managerName + "&groupName=" + group.getName();
+	List<Device> listDev = group.findListIStateDev(true);
 	Collections.sort(listDev);
-	List<DevCollect> listClimate = user.findListCollectDev(true);
+	List<DevCollect> listClimate = group.findListCollectDev(true);
 	Collections.sort(listClimate);
 
 	request.setAttribute("listDevice", listDev);
@@ -45,16 +46,16 @@
 <script src="<%=path%>/jquery/jquery-2.1.4.min.js"></script>
 <script src="<%=path%>/bootstrap/js/bootstrap.min.js"></script>
 
-
 </head>
 
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<span class="navbar-text">
-    		<%=managerName%>-<%=user.getName()%>:<%=user.getPetName()%>
+    		<%=managerName%>-<%=group.getName()%>:<%=group.getPetName()%>
   		</span>
 	  	<a class="nav-link" href="<%=path%>/Logout">注销</a>
 	  	<a id="a_refresh" class="nav-link" href="#">刷新状态</a>
+	  	<a id="a_alarm" class="nav-link" href="<%=urlAlarm%>">报警记录</a>
 	  	<span id="a_pad_state" class="navbar-text">
     		终端状态
   		</span>
@@ -67,7 +68,7 @@
 				<ul class="nav nav-tabs">
 					<li id="li_device" class="active"><a href="#">电器列表</a></li>
 					<li id="li_climate"><a href="#">仪表列表</a></li>
-					<li id="li_climate"><a href="#">配置</a></li>
+					<li id="li_alarm"><a href="#">报警信息</a></li>
 				</ul>
 			</div>
 		</div>
@@ -159,6 +160,12 @@
 			$("#climate_device").hide();
 		});
 		$("#li_climate").click(function() {
+			$(this).attr("class", "active");
+			$("#li_device").removeAttr("class");
+			$("#control_device").hide();
+			$("#climate_device").show();
+		});
+		$("#li_alarm").click(function() {
 			$(this).attr("class", "active");
 			$("#li_device").removeAttr("class");
 			$("#control_device").hide();
@@ -310,7 +317,7 @@
 	};
 	
 	var manage = '<%=managerName%>';
-	var group = '<%=user.getName()%>';
+	var group = '<%=group.getName()%>';
 
 	websocket.onopen = function() {
 		var jsonUser = new Object();

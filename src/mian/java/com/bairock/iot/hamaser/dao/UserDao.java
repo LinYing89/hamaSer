@@ -1,5 +1,6 @@
 package com.bairock.iot.hamaser.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,9 +9,11 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 
 import com.bairock.iot.hamaser.listener.SessionHelper;
+import com.bairock.iot.hamaser.listener.StartUpListener;
 import com.bairock.iot.intelDev.device.DevHaveChild;
 import com.bairock.iot.intelDev.device.Device;
 import com.bairock.iot.intelDev.device.DeviceAssistent;
+import com.bairock.iot.intelDev.device.alarm.AlarmInfo;
 import com.bairock.iot.intelDev.linkage.Effect;
 import com.bairock.iot.intelDev.linkage.Linkage;
 import com.bairock.iot.intelDev.linkage.LinkageCondition;
@@ -358,6 +361,42 @@ public class UserDao {
 		return device;
 	}
 	
+	/**
+	 * 获取组下的所有报警信息
+	 * @param userName 用户名
+	 * @param groupName 组名
+	 * @return
+	 */
+	public List<AlarmInfo> findGroupAlarmInfo(String userName, String groupName) {
+		List<AlarmInfo> listAlarmInfo = new ArrayList<>();
+		EntityManager eManager2 = StartUpListener.getEntityManager();
+		try {
+			eManager2.getTransaction().begin();
+
+			TypedQuery<User> query = eManager2.createQuery("from User as u where u.name=:name",
+					User.class);
+			query.setParameter("name", userName);
+			User user1 = query.getSingleResult();
+			if(null != user1) {
+				for(DevGroup group : user1.getListDevGroup()){
+					if(group.getName().equals(groupName)) {
+						for(Device dev : group.getListDevice()) {
+							listAlarmInfo.addAll(findAlarmInfo(dev));
+						}
+					}
+				}
+			}
+			eManager2.getTransaction().commit();
+		} catch (Exception e) {
+			eManager2.getTransaction().rollback();
+			e.printStackTrace();
+			logger.error(e.getMessage() + " 说明:userName:" + userName + "groupName:" + groupName);
+		}finally {
+			eManager2.close();
+		}
+		return listAlarmInfo;
+	}
+	
 	private void initGroup(DevGroup group) {
 		if(null == group) {
 			return;
@@ -389,6 +428,16 @@ public class UserDao {
 				}
 			}
 		}
+	}
+	
+	private List<AlarmInfo> findAlarmInfo(Device device){
+		List<AlarmInfo> list = device.getListAlarmInfo();
+		if(device instanceof DevHaveChild) {
+			for(Device dev : ((DevHaveChild)device).getListDev()) {
+				list.addAll(findAlarmInfo(dev));
+			}
+		}
+		return list;
 	}
 	
 	private void initDevice(Device device) {
