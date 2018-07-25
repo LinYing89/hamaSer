@@ -39,7 +39,7 @@ public class ChangeGroupServlet extends HttpServlet {
 			DevGroupDao.setDeviceListener(group, l1, l2, l3);
 			request.getSession().setAttribute(SessionHelper.DEV_GROUP, group);
 			request.setAttribute("serverIp", StartUpListener.SERVER_IP);
-			request.getRequestDispatcher("/group2.jsp").forward(request, response);
+			request.getRequestDispatcher("/group.jsp").forward(request, response);
 			//response.sendRedirect(request.getContextPath() + "/group.jsp");
 		}
 	}
