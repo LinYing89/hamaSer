@@ -36,7 +36,7 @@
 		<form class="bs-example bs-example-form" role="form" action="<%=path%>/EditGroupServlet" method="post">
 			<div class="input-group">
 				<span class="input-group-addon">组名</span> 
-				<input type="text" class="form-control" name="devGroupName" value="<%=group.getName()%>">
+				<input type="text" class="form-control" name="groupName" value="<%=group.getName()%>">
 			</div>
 			<br>
 			<div class="input-group">

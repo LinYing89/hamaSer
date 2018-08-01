@@ -21,7 +21,6 @@ import com.bairock.iot.intelDev.communication.DevChannelBridgeHelper;
 import com.bairock.iot.intelDev.communication.DevServer;
 import com.bairock.iot.intelDev.communication.RefreshCollectorValueHelper;
 import com.bairock.iot.intelDev.user.IntelDevHelper;
-import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
 public class StartUpListener implements ServletContextListener {
 
@@ -45,7 +44,7 @@ public class StartUpListener implements ServletContextListener {
 			}
 		}
 		em.close();
-		AbandonedConnectionCleanupThread.checkedShutdown();
+		com.mysql.cj.jdbc.AbandonedConnectionCleanupThread.checkedShutdown();
 		DevChannelBridgeHelper.getIns().stopSeekDeviceOnLineThread();
 		IntelDevHelper.shutDown();
 		RefreshCollectorValueHelper.getIns().isStoped = true;

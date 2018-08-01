@@ -54,7 +54,7 @@ if(null == ctrlable){
 	      buttons: {
 	        "确认": function() {
 	          $( this ).dialog( "close" );
-	          window.location.href="<%=path%>/DeleteGroupServlet?devGroupName=" + groupName; 
+	          window.location.href="<%=path%>/DeleteGroupServlet?groupName=" + groupName; 
 	        },
 	        "取消": function() {
 	          $( this ).dialog( "close" );
@@ -111,7 +111,7 @@ if(null == ctrlable){
 					<ul class="dropdown-menu">
 						<li><a href="<%=path%>/ChangeGroupServlet?groupName=${group.name}">进入</a></li>
 						<li class="divider"></li>
-						<li><a class="a_ctrl" href="<%=path%>/page/editGroup.jsp?devGroupName=${group.name}">编辑</a></li>
+						<li><a class="a_ctrl" href="<%=path%>/page/editGroup.jsp?groupName=${group.name}">编辑</a></li>
 						<li><a class="a_ctrl" href="javascript:void(0)" onclick="deleteGroup('${group.name }')">删除</a></li>
 					</ul>
 				</li>
