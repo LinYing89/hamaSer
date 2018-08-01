@@ -55,21 +55,29 @@ public class StartUpListener implements ServletContextListener {
 	}
 
 	public void contextInitialized(ServletContextEvent sce) {
-		logger.info("contextInitialized");
+		logger.info("contextInitialized1");
 		em = Persistence.createEntityManagerFactory("intelDev");
+		logger.info("contextInitialized2");
 		DevChannelBridgeHelper.DEV_CHANNELBRIDGE_NAME = MyDevChannelBridge.class.getName();
-
+		logger.info("contextInitialized3");
 		try {
+			logger.info("properties1");
 			Properties properties = new Properties();
+			logger.info("properties2");
 			properties.loadFromXML(new FileInputStream(sce.getServletContext().getRealPath("/WEB-INF/config.xml")));
+			logger.info("properties3");
 			SERVER_IP = properties.get("serverIp").toString();
+			logger.info("SERVER_IP: " + SERVER_IP);
 			PadServer.PORT = Integer.parseInt(properties.get("padPort").toString());
+			logger.info("PadServer.PORT: " + PadServer.PORT);
 			DevServer.PORT = Integer.parseInt(properties.get("devPort").toString());
+			logger.info("DevServer.PORT: " + DevServer.PORT);
 			UpDownloadServer.PORT = Integer.parseInt(properties.get("upDownloadPort").toString());
 			DOWNLOAD_RELEASE_PATH = properties.get("downloadReleasePath").toString();
 			DOWNLOAD_DEBUG_PATH = properties.get("downloadDebugPath").toString();
 			logger.info("padPort:" + PadServer.PORT + " devPort:" + DevServer.PORT + " loadPort:" + UpDownloadServer.PORT);
 		} catch (Exception e) {
+			logger.info(e.getMessage());
 			e.printStackTrace();
 		}
 

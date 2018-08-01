@@ -84,6 +84,8 @@ public class UpDownloadHandler extends ChannelInboundHandlerAdapter{
 					}
 				}
 			}
+		}catch(Exception e) {
+			logger.info(e.getMessage());
 		}finally{
 			m.release();
 //			ReferenceCountUtil.release(msg);
