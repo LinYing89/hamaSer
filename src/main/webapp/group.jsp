@@ -50,15 +50,12 @@
 
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<span class="navbar-text">
+		<span id="groupName" class="navbar-text">
     		<%=managerName%>-<%=group.getName()%>:<%=group.getPetName()%>
   		</span>
 	  	<a class="nav-link" href="<%=path%>/Logout">注销</a>
 	  	<a id="a_refresh" class="nav-link" href="#">刷新状态</a>
-	  	<a id="a_alarm" class="nav-link" href="<%=urlAlarm%>">报警记录</a>
-	  	<span id="a_pad_state" class="navbar-text">
-    		终端状态
-  		</span>
+<%-- 	  	<a id="a_alarm" class="nav-link" href="<%=urlAlarm%>">报警记录</a> --%>
 	</nav>
 
 	<div class="container">
@@ -68,7 +65,6 @@
 				<ul class="nav nav-tabs">
 					<li id="li_device" class="active"><a href="#">电器列表</a></li>
 					<li id="li_climate"><a href="#">仪表列表</a></li>
-					<li id="li_alarm"><a href="#">报警信息</a></li>
 				</ul>
 			</div>
 		</div>
@@ -151,6 +147,8 @@
 		
 		<script type="text/javascript">
 	$(document).ready(function() {
+		
+		$("#groupName").css("color", "red");
 		
 		$("#climate_device").hide();
 		$("#li_device").click(function() {
@@ -284,20 +282,16 @@
 		}else if(obj.jsonId == 7){
 			//终端状态
 			var state = obj.state;
-			var text = "";
 			if(state == 0){
-				text = "终端:离线";
+				$("#groupName").css("color", "red");
 			}else{
-				text = "终端:在线";
+				$("#groupName").css("color", "black");
 			}
-			var btnPadState = $(".navbar").find("#a_pad_state");
-			btnPadState[0].innerHTML = text;
 		}
 	}
 	
 	function clearTime(){
 		closeWebSocket();
-		
 	}
 	window.onunload=clearTime;
 	

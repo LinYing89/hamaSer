@@ -37,16 +37,28 @@ public class MyDevChannelBridge extends DevChannelBridge {
 
 			@Override
 			public void onSend(DevChannelBridge bridge, String msg) {
-				logger.info("send:" + msg);
+				String info = "1" + createUserInfo() + " -> msg:" + msg;
+				logger.info(info);
+				RemoteLogWebSocket.sendMessageToAll(info);
 			}
 
 			@Override
 			public void onReceived(DevChannelBridge bridge, String msg) {
-				logger.info("received:" + msg);
+				String info = "2" + createUserInfo() + " <- msg:" + msg;
+				logger.info(info);
+				RemoteLogWebSocket.sendMessageToAll(info);
 			}
 		});
 	}
 
+	private String createUserInfo() {
+		String info = "u:";
+		info += (null == userName ? "" : userName);
+		info += "g:";
+		info += (null == groupName ? "" : groupName);
+		return info;
+	}
+	
 	@Override
 	public void close() {
 //		if(null != getDevice()) {
